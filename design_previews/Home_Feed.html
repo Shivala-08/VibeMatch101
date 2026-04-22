@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CampusMatch | Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0d0d1a",
+                        "surface-container-high": "#292937",
+                        "surface-dim": "#12121f",
+                        "on-primary-fixed-variant": "#8d0051",
+                        "error": "#ffb4ab",
+                        "background": "#12121f",
+                        "surface-bright": "#383847",
+                        "on-tertiary-container": "#013200",
+                        "outline": "#a88892",
+                        "on-secondary-container": "#e299ff",
+                        "on-primary-container": "#580030",
+                        "tertiary": "#69df54",
+                        "inverse-primary": "#b8006c",
+                        "on-surface-variant": "#e1bdc8",
+                        "surface-container-low": "#1a1a28",
+                        "secondary-fixed-dim": "#ebb2ff",
+                        "inverse-surface": "#e3e0f4",
+                        "outline-variant": "#594048",
+                        "error-container": "#93000a",
+                        "on-surface": "#e3e0f4",
+                        "on-error": "#690005",
+                        "surface-variant": "#343342",
+                        "surface-container-highest": "#343342",
+                        "on-primary-fixed": "#3e0021",
+                        "on-background": "#e3e0f4",
+                        "secondary-fixed": "#f8d8ff",
+                        "surface-tint": "#ffb0cc",
+                        "tertiary-container": "#2ea620",
+                        "on-tertiary-fixed": "#012200",
+                        "on-tertiary-fixed-variant": "#035300",
+                        "tertiary-fixed": "#85fd6d",
+                        "on-primary": "#640038",
+                        "surface": "#12121f",
+                        "on-secondary-fixed-variant": "#721199",
+                        "secondary-container": "#721199",
+                        "on-secondary-fixed": "#320047",
+                        "primary-container": "#ff46a0",
+                        "primary": "#ffb0cc",
+                        "surface-container": "#1e1e2c",
+                        "inverse-on-surface": "#2f2f3d",
+                        "primary-fixed-dim": "#ffb0cc",
+                        "secondary": "#ebb2ff",
+                        "tertiary-fixed-dim": "#69df54",
+                        "primary-fixed": "#ffd9e4",
+                        "on-tertiary": "#013a00",
+                        "on-secondary": "#520071",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- Ambient Glow Effects -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary-container/10 blur-[150px] pointer-events-none"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-none shadow-[0_0_20px_rgba(233,30,140,0.1)] flex justify-between items-center px-6 py-4">
+<div class="font-serif italic font-bold text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-pink-600 text-2xl tracking-tighter">
+            CampusMatch
+        </div>
+<div class="flex items-center gap-6">
+<button class="text-slate-400 hover:scale-105 transition-transform active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-400 hover:scale-105 transition-transform active:scale-95 duration-200">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Feed -->
+<main class="pt-24 pb-32 max-w-2xl mx-auto px-4">
+<!-- Feed Column -->
+<div class="flex flex-col gap-8">
+<!-- Post Card 1 -->
+<article class="bg-surface-variant/40 bg-glass rounded-lg p-6 border border-outline-variant/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20" data-alt="Portrait of a young woman with a warm smile, college student aesthetic, soft natural lighting, high-end photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXg8Gv0nM2aEZ2kiKLMOPL49bFWNhbeAoN1Ur57OI8KzAek6ZrFWeyc9XPLuVpvpWhtDFvn2ucKX8ZVhwenmOobssYXTqvlO8j-tfzo4dDM45OEj6asgD3MooTpYv-CiTZqdTt-Rydw_0tpnVXdywt2ZvqqqnL8mkifP5r3mYZygF_USR1bvRaHWihGdtlobhXUVv5gSOiglhOqmFqRB7lvlJHqvjtRp2FY5RGbVIay4TfoRfyO-019KTdRF_H2JI5B3yrN6s5ndPU"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary rounded-full border-2 border-surface-container-lowest"></div>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Elena Rodriguez</h3>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container/30 text-on-secondary-container px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Architecture</span>
+<span class="text-slate-500 text-xs uppercase tracking-tighter">2h ago</span>
+</div>
+</div>
+</div>
+<button class="text-slate-500 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<p class="text-on-surface-variant mb-4 leading-relaxed font-body">
+                    Final studio project is finally coming together! The light in the library basement at 3 AM is actually pretty magical. Anyone else pulling an all-nighter? 📐☕️
+                </p>
+<div class="rounded-lg overflow-hidden mb-4 aspect-video bg-surface-container-low">
+<img alt="Architecture Studio" class="w-full h-full object-cover" data-alt="Modern architecture studio with scale models and blueprints, dramatic evening lighting from desk lamps, sophisticated academic atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp5qIlCzBb2bZuR16yCjpAWC1yExoHHr8Usy4qzl1nKLw1M0ls-MHPcl2ir001FQuyuLVSn06NA_kALIs8qBmMs1VS7aaRh6TWY39u5axAu_MtDNTgaaSpeSk3rX3iTe_PLbYwdlqQXfYhbWLEciE6o7hUgse_umovuRfs98Pl3S4tAeofbqZ7Ao5MepoRHaf0Lsssqa3JMX50DaBffQa-48E1csRPJeLMdR3uGv8EBCwbYgcvj-uTyKKW_khM2bZ1hj5Pf9Q9b_s0"/>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-pink-500 hover:scale-110 transition-transform active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-xs font-bold font-label">124</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-xs font-bold font-label">18</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<button class="text-slate-500">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</article>
+<!-- Post Card 2 -->
+<article class="bg-surface-variant/40 bg-glass rounded-lg p-6 border border-outline-variant/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20" data-alt="Portrait of a young man with glasses, stylish college student, creative urban vibe, soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuLCY1bJM-l08-OB48CYpE3UZrvw0x7sYWEJaSldYsfGoNyevAsoD8CD_GYRqB2AQmvDU67Jrufeusv84IVZkfdKenYElCCu4LVG7UNMcKe_3npR5rOdrUv1lHHRTOhvfB_gCTT4JSmdQeVdgn3-xC50etB4lUB7eu602qfyqd_ncoQXpRqCjdtmCfRl3TYyC7gAMku0ttbhFCMd-F-SIWthihgQdxo7Z7sv0LSjJDIn6MzOX_2gQYgYTttddE7Vy7tQGYjIfaQZzI"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary rounded-full border-2 border-surface-container-lowest"></div>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Marcus Chen</h3>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container/30 text-on-secondary-container px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Computer Science</span>
+<span class="text-slate-500 text-xs uppercase tracking-tighter">5h ago</span>
+</div>
+</div>
+</div>
+<button class="text-slate-500 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<p class="text-on-surface-variant mb-4 leading-relaxed font-body">
+                    Just discovered a hidden coffee spot near the North Campus engineering building. Best espresso I've had all semester. ⚡️
+                </p>
+<div class="rounded-lg overflow-hidden mb-4 aspect-square bg-surface-container-low max-h-[400px]">
+<img alt="Coffee" class="w-full h-full object-cover" data-alt="Close-up of a perfectly poured latte with latte art on a dark textured cafe table, moody atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1l9uRBSm0ixi9sMQWk6s2YY2nMOrm9uIe-KwNsv-mZlh9Dh7FnMGs9O3RH1HDnyWRL8iETTP28-Mb2zFcUmg-DgnAf-B3xgVgTuTBmH2xEw1L1NGzNWp3WxnBoFxcF-exsnJiWP2uMALMafj4vnKvljr3MAicDuptU6u5ixKO8fMRhFz1sILwPpbgFy9CZGAoQbEL-eeEKdiyLIlhbmV1L7p80Oh4YKlUdbRHP4idICan5xmGZG-5y7hv5rB_TkKO2mLnSOIc-cYZ"/>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-slate-400 hover:text-pink-400 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-xs font-bold font-label">56</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-xs font-bold font-label">3</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<button class="text-slate-500">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</article>
+<!-- Post Card 3 (Text Only) -->
+<article class="bg-surface-variant/40 bg-glass rounded-lg p-6 border border-outline-variant/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20" data-alt="Sophisticated portrait of a female graduate student, elegant and focused, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB41a_4K8CbPoGHtvkJP_MM7RnrOoNZOQQaFTOKk-xTvKDoJ7az1VrHxbHbd-_hv7Wlqg3T6BpkP_Sulrgw3O5Ubzurg2OrNQco7uBHdtofcu33JT3KyYA3XPmCZpYzevDtT3GSV-oXX1rQfWLUhiK82si8JtGaEVMbq3_Disra3M_JiqE2mkD5S2750KlKHFjJCQIi9QEhVbxGRUoenOT4TUG3jJLnxsY46f3zHXJcX6viVAxwlzReLmST0ggBnQoJv5zDlPMqcibB"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-slate-500 rounded-full border-2 border-surface-container-lowest"></div>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Sarah Jenkins</h3>
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container/30 text-on-secondary-container px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Philosophy</span>
+<span class="text-slate-500 text-xs uppercase tracking-tighter">8h ago</span>
+</div>
+</div>
+</div>
+</div>
+<p class="text-xl font-headline italic text-on-surface mb-6 leading-relaxed bg-gradient-to-r from-pink-200 to-primary-container bg-clip-text text-transparent">
+                    "The campus at night isn't just a place, it's a feeling of collective ambition wrapped in silence."
+                </p>
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-pink-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-xs font-bold font-label">289</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-xs font-bold font-label">42</span>
+</button>
+<button class="flex items-center gap-2 text-slate-400 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-on-primary-container shadow-[0_0_20px_rgba(233,30,140,0.4)] z-[60] active:scale-90 transition-transform group">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:rotate-90">add</span>
+<!-- Pulse effect -->
+<div class="absolute inset-0 rounded-full bg-primary/40 animate-ping"></div>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-slate-950/60 backdrop-blur-2xl border-t border-white/5 shadow-[0_-4px_30px_rgba(0,0,0,0.5)] flex justify-around items-center px-4 pb-8 pt-4 rounded-t-[2.5rem]">
+<a class="flex flex-col items-center justify-center text-pink-500 bg-pink-500/10 rounded-full px-5 py-2 shadow-[0_0_15px_rgba(233,30,140,0.3)] group active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors group active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors group active:scale-90 duration-300 relative" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Messages</span>
+<div class="absolute top-2 right-4 w-2 h-2 bg-pink-500 rounded-full"></div>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors group active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>
