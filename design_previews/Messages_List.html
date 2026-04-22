@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Messages - CampusMatch</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#e1bdc8",
+                    "on-surface": "#e3e0f4",
+                    "inverse-surface": "#e3e0f4",
+                    "tertiary": "#69df54",
+                    "on-secondary-fixed-variant": "#721199",
+                    "surface-container-low": "#1a1a28",
+                    "surface-container": "#1e1e2c",
+                    "surface-dim": "#12121f",
+                    "secondary-fixed": "#f8d8ff",
+                    "inverse-primary": "#b8006c",
+                    "primary-fixed": "#ffd9e4",
+                    "secondary-fixed-dim": "#ebb2ff",
+                    "primary": "#ffb0cc",
+                    "surface-tint": "#ffb0cc",
+                    "on-tertiary-container": "#013200",
+                    "surface": "#12121f",
+                    "on-error": "#690005",
+                    "secondary-container": "#721199",
+                    "on-secondary": "#520071",
+                    "secondary": "#ebb2ff",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed": "#85fd6d",
+                    "outline": "#a88892",
+                    "on-primary-fixed-variant": "#8d0051",
+                    "on-primary-fixed": "#3e0021",
+                    "on-primary": "#640038",
+                    "error-container": "#93000a",
+                    "background": "#12121f",
+                    "tertiary-fixed-dim": "#69df54",
+                    "tertiary-container": "#2ea620",
+                    "primary-fixed-dim": "#ffb0cc",
+                    "on-tertiary-fixed-variant": "#035300",
+                    "on-secondary-container": "#e299ff",
+                    "outline-variant": "#594048",
+                    "on-secondary-fixed": "#320047",
+                    "surface-container-lowest": "#0d0d1a",
+                    "inverse-on-surface": "#2f2f3d",
+                    "surface-variant": "#343342",
+                    "surface-container-highest": "#343342",
+                    "on-background": "#e3e0f4",
+                    "surface-bright": "#383847",
+                    "on-tertiary": "#013a00",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#292937",
+                    "primary-container": "#ff46a0",
+                    "on-primary-container": "#580030",
+                    "on-tertiary-fixed": "#012200"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0d0d1a;
+            color: #e3e0f4;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            text-shadow: 0 0 20px rgba(233, 30, 140, 0.4);
+        }
+        .glass-card {
+            background: rgba(52, 51, 66, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-surface-container-lowest pb-32 overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 w-full bg-slate-950/40 backdrop-blur-xl border-none shadow-[0_0_20px_rgba(233,30,140,0.1)]">
+<div class="flex items-center gap-4">
+<span class="font-serif italic font-bold text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-pink-600 font-serif text-2xl tracking-tighter">CampusMatch</span>
+</div>
+<div class="flex items-center gap-6 text-slate-400">
+<button class="hover:scale-105 transition-transform active:scale-95 duration-200">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="hover:scale-105 transition-transform active:scale-95 duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Editorial Header -->
+<div class="mb-10 mt-6 space-y-2">
+<div class="flex justify-between items-end">
+<h1 class="font-headline text-5xl font-bold tracking-tight text-on-surface editorial-shadow italic">Messages</h1>
+<button class="w-12 h-12 glass-card rounded-full flex items-center justify-center text-primary shadow-[0_0_15px_rgba(233,30,140,0.2)] hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+<p class="font-body text-on-surface-variant/70 text-lg ml-1">Spark connections through conversation.</p>
+</div>
+<!-- Conversation List -->
+<div class="space-y-4">
+<!-- Message Row: Active/Unread -->
+<div class="glass-card p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-variant/60 group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<div class="relative">
+<img alt="" class="w-12 h-12 rounded-full object-cover outline outline-2 outline-primary/30" data-alt="portrait of a stylish young woman with colorful earrings and curly hair laughing in a vibrant urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrnxeaqVmT4LCL6QqYi3pdA4h_T_i7FcPCwK6xnXIuz9P9abqHrxiX3JqFkgBuan8wV_KZr68QAct4o0M60XAx9KhZ8KUwOYZN7442j_LdD8oeoe1WtQEV8mUIOnZkaiOMBnZQ-EKA0LHx7v-c0eFgD8GLFORIOUU-5El4BYrJFGO9tTuN0iTcM5ypDIpRZ79Vx9J9f9AfPWVQO_H6t9KvS_Cg-xE2IoxN5mILwKKH0yPU5rLb0-LSqDajiK-Wam090PewAXchrdKD"/>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-tertiary border-2 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface text-lg truncate">Elena Rossi</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">2m ago</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant font-medium text-sm truncate">That coffee spot by the library is amazing! Would love to go back...</p>
+<div class="bg-primary-container text-on-primary-container text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(255,70,160,0.5)] flex-shrink-0">2</div>
+</div>
+</div>
+</div>
+<!-- Message Row: Read -->
+<div class="p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-container-high group cursor-pointer">
+<div class="relative">
+<img alt="" class="w-12 h-12 rounded-full object-cover" data-alt="close-up portrait of a handsome young man with a warm smile wearing a denim jacket outdoors at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5OXMcXX_ae2CGQgf-TpRxev8d_m4sfLjxLqDu91awEu8vzRg3u6YlgK-5ZfNiZ-X3-2THluUk73nEBH3kyvvMhw9DU7ek6EZsstgyEezsdZiJ1mc-_KUmfxDjmr1c_RjGoudbbaJKVnImB6M_lTCT1lCgsX7uUSws2djzEjdfToy3Obe1j_t2NlRGYLjnIZw0Ye-FOhciH4dyOBL9oPsAnmr1OmL-Kvprpp7BbGOSbgTE5tzjVFyh8DAZbpUaKIsZJ0ruubf23fQh"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface/80 text-lg truncate">Marcus Chen</span>
+<span class="text-[10px] font-medium text-on-surface-variant/40 uppercase tracking-widest">1h ago</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant/60 text-sm truncate italic">You: See you at the game tonight then!</p>
+</div>
+</div>
+</div>
+<!-- Message Row: Read -->
+<div class="p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-container-high group cursor-pointer">
+<div class="relative">
+<img alt="" class="w-12 h-12 rounded-full object-cover" data-alt="artistic headshot of a creative woman with glasses and short hair against a soft pink and purple studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjbhHihtK8Sx7k8O-thaiG0swMll3_pmPkK0w3Yz76IRYvgLFt8YGY0pC3c97iTWgn17e0IAJPXmAgHFdJZhqqnH06boceBKdynwdW5HYD_inoJa0E_a2j6Xm6wIhn3y8QcscOK-WKHxdxwcA6cw2_ylPkpEAwGZKlJMgwrSHyJ6D7DYpgN3r-RC2DLjudd8C_PdMvIXgffj_6rn6ztcCJcFFoGsv_TZ49fBaybAKs0QjqlMY5ArlJpu39IwIlIJohZAavFZrwz0Yy"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface/80 text-lg truncate">Sarah Jenkins</span>
+<span class="text-[10px] font-medium text-on-surface-variant/40 uppercase tracking-widest">3h ago</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant/60 text-sm truncate">I finally finished that design project! It turned out so well.</p>
+</div>
+</div>
+</div>
+<!-- Message Row: Unread -->
+<div class="glass-card p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-variant/60 group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<div class="relative">
+<img alt="" class="w-12 h-12 rounded-full object-cover outline outline-2 outline-primary/30" data-alt="studio portrait of a cool young man with braids and a leather jacket looking confidently at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB8JuVAAYC8W6WL3COaRAHhuUE9xvo6OI4Ivl2dbnAp2X5lzcpfjl-swmUIjS6jVZIui6KWd5qHKaAFiLi-AyW8x3ep0TV3ESI_GIA2SyPcykPJ4SA2diDU3m4Djvk_7455N7dP134sOYIRxgLrLSkZJkiudkt_KFKD8tkPYdY2Y-Mnou4n14Ryzv_4Paule3wKGKRGeKufLnY8x7IzCIXMiNg4_RCh39iZUhfDoAm-2jnv5qrV08_EpClvBlB8IpyWxtRYDO4yuma"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface text-lg truncate">Jordan Lee</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Yesterday</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant font-medium text-sm truncate">Check out this playlist I made for the roadtrip...</p>
+<div class="bg-primary-container text-on-primary-container text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(255,70,160,0.5)] flex-shrink-0">1</div>
+</div>
+</div>
+</div>
+<!-- Message Row: Read -->
+<div class="p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-container-high group cursor-pointer">
+<div class="relative">
+<img alt="" class="w-12 h-12 rounded-full object-cover" data-alt="moody portrait of a woman with dark hair in a turtleneck sweater against a dark blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQkXb1crRrwvMISFfpqO7nBAycOhRwdQxLDE0NHtlpnOAlw60-C2GX0VWdblZrNjcAWAg_EDoAW9oi0BodARn24Z3q7BXk5737xqaMobNyhjoN2Fa_0x0rE0MKXLPhpfSs40Hk8Vo2_be56rrZrNt5B3R01QgTyyaSu2RPbKJLx4NeXb0eSlcOrhZG9BcyCPlKSzEH6xKydUkbAcaMfA6SH2UFBTOzkFRD5zgVkq9AFanFC2FHERb9WivqCzWolXkWksrcAG5qSevk"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface/80 text-lg truncate">Isabella V.</span>
+<span class="text-[10px] font-medium text-on-surface-variant/40 uppercase tracking-widest">Tue</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant/60 text-sm truncate">Are you coming to the poetry slam on Friday night?</p>
+</div>
+</div>
+</div>
+<!-- Message Row: Read -->
+<div class="p-4 rounded-lg flex items-center gap-4 transition-all hover:bg-surface-container-high group cursor-pointer">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-secondary font-bold text-xl">D</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline font-bold text-on-surface/80 text-lg truncate">David Miller</span>
+<span class="text-[10px] font-medium text-on-surface-variant/40 uppercase tracking-widest">Mon</span>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-on-surface-variant/60 text-sm truncate italic">You: I'll send you the notes from today's lecture.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty state spacer -->
+<div class="h-10"></div>
+<p class="text-center font-label text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/30">End of conversations</p>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-slate-950/60 backdrop-blur-2xl rounded-t-[2.5rem] border-t border-white/5 shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Discover</span>
+</a>
+<!-- Active Tab: Messages -->
+<a class="flex flex-col items-center justify-center text-pink-500 bg-pink-500/10 rounded-full px-5 py-2 shadow-[0_0_15px_rgba(233,30,140,0.3)] hover:text-pink-300 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Messages</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-sans text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>

@@ -4,17 +4,20 @@ import { useForm } from 'react-hook-form';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { compressImage, isValidImageType } from '../utils/imageCompression';
-import { BRANCHES, DIVISIONS, YEARS, HOSTEL_STATUS, BUCKET_PROFILES, APP_NAME } from '../utils/constants';
+import { BRANCHES, DIVISIONS, YEARS, HOSTEL_STATUS, BUCKET_PROFILES } from '../utils/constants';
 import toast from 'react-hot-toast';
-import { CameraIcon } from '@heroicons/react/24/outline';
 
 export default function CreateProfile() {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+    defaultValues: { hostel_or_day: 'hostel' }
+  });
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const hostelOrDay = watch('hostel_or_day');
 
   const handlePhotoSelect = (e) => {
     const file = e.target.files[0];
@@ -72,121 +75,173 @@ export default function CreateProfile() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--color-surface)' }}>
-      <div className="w-full max-w-lg">
-        <div className="text-center mb-6 animate-fade-in">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-on-surface)' }}>Complete Your Profile</h1>
-          <p className="text-sm" style={{ color: 'var(--color-outline)' }}>Let the {APP_NAME} community know who you are</p>
-        </div>
+  const dashedBg = "url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23ff46a0' stroke-width='3' stroke-dasharray='10%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\")";
 
-        <div className="card p-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            {/* Photo */}
-            <div className="flex justify-center mb-2">
-              <label className="relative cursor-pointer group">
-                <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center"
-                     style={{ background: 'var(--color-surface-container)' }}>
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <CameraIcon className="w-8 h-8" style={{ color: 'var(--color-outline)' }} />
-                  )}
+  return (
+    <div className="bg-surface-container-lowest text-on-surface min-h-screen pb-20 selection:bg-primary-container selection:text-white">
+      {/* Top Navigation Bar */}
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-slate-950/40 backdrop-blur-xl border-none shadow-none shadow-[0_0_20px_rgba(233,30,140,0.1)]">
+        <div className="font-serif italic font-bold text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-pink-600 text-2xl tracking-tighter">
+          CampusMatch
+        </div>
+      </nav>
+
+      {/* Main Canvas */}
+      <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        {/* Header & Progress */}
+        <header className="mb-10 text-center lg:text-left animate-fade-in-up">
+          <h1 className="font-headline text-4xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-on-surface to-primary">
+            Complete Your Profile
+          </h1>
+          <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden mb-2">
+            <div className="h-full w-3/4 bg-gradient-to-r from-primary to-primary-container glow-sm rounded-full"></div>
+          </div>
+          <div className="flex justify-between items-center px-1">
+            <span className="text-xs uppercase tracking-widest text-primary font-bold">Step 3 of 4</span>
+            <span className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">75% Finished</span>
+          </div>
+        </header>
+
+        {/* Profile Setup Container */}
+        <div className="glass-card border border-outline-variant/10 rounded-3xl p-8 lg:p-12 shadow-[0_0_50px_rgba(0,0,0,0.3)] relative overflow-hidden animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          {/* Decorative Accent */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10">
+            
+            {/* Avatar Upload Zone */}
+            <div className="md:col-span-12 flex flex-col items-center justify-center mb-2">
+              <label className="relative group cursor-pointer">
+                <div className="w-40 h-40 rounded-full flex items-center justify-center p-2 transition-transform duration-500 group-hover:rotate-12" style={{ backgroundImage: dashedBg }}>
+                  <div className="w-full h-full rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border-4 border-surface-container-lowest">
+                    {photoPreview ? (
+                      <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="material-symbols-outlined text-primary text-5xl opacity-40 group-hover:opacity-100 transition-opacity">add_a_photo</span>
+                    )}
+                  </div>
                 </div>
-                <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <CameraIcon className="w-6 h-6 text-white" />
-                </div>
+                <button type="button" className="absolute bottom-1 right-1 bg-primary-container text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all pointer-events-none">
+                  <span className="material-symbols-outlined text-sm">edit</span>
+                </button>
                 <input type="file" accept="image/*" onChange={handlePhotoSelect} className="hidden" />
               </label>
-            </div>
-            <p className="text-xs text-center" style={{ color: 'var(--color-outline)' }}>Upload a profile photo (optional)</p>
-
-            {/* Name */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>Full Name *</label>
-              <input {...register('full_name', { required: 'Name is required' })}
-                     className="input-serene" placeholder="Your full name" />
-              {errors.full_name && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.full_name.message}</p>}
+              <p className="mt-4 text-xs text-on-surface-variant font-medium uppercase tracking-wider">Upload your campus vibe</p>
             </div>
 
-            {/* Age */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>Age *</label>
-              <input type="number" {...register('age', { required: 'Age is required', min: { value: 16, message: 'Min age 16' }, max: { value: 30, message: 'Max age 30' } })}
-                     className="input-serene" placeholder="Your age" />
-              {errors.age && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.age.message}</p>}
+            {/* Form Fields */}
+            <div className="md:col-span-8 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Full Name *</label>
+              <input 
+                {...register('full_name', { required: 'Name is required' })}
+                className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg transition-all outline-none placeholder:text-on-surface-variant/30" 
+                placeholder="Alex Rivers" 
+              />
+              {errors.full_name && <p className="text-xs text-error mt-1">{errors.full_name.message}</p>}
             </div>
 
-            {/* Branch */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>Branch *</label>
-              <select {...register('branch', { required: 'Branch is required' })} className="input-serene">
-                <option value="">Select your branch</option>
-                {BRANCHES.map(b => <option key={b} value={b}>{b}</option>)}
-              </select>
-              {errors.branch && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.branch.message}</p>}
+            <div className="md:col-span-4 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Age *</label>
+              <input 
+                type="number"
+                {...register('age', { required: 'Age is required', min: { value: 16, message: 'Min 16' }, max: { value: 30, message: 'Max 30' } })}
+                className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg transition-all outline-none placeholder:text-on-surface-variant/30" 
+                placeholder="21" 
+              />
+              {errors.age && <p className="text-xs text-error mt-1">{errors.age.message}</p>}
             </div>
 
-            {/* Division + Year row */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                       style={{ color: 'var(--color-on-surface-variant)' }}>Division *</label>
-                <select {...register('division', { required: 'Required' })} className="input-serene">
-                  <option value="">Division</option>
-                  {DIVISIONS.map(d => <option key={d} value={d}>{d}</option>)}
+            <div className="md:col-span-6 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Branch *</label>
+              <div className="relative">
+                <select 
+                  {...register('branch', { required: 'Branch is required' })}
+                  className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg appearance-none transition-all outline-none">
+                  <option value="" disabled>Select your branch</option>
+                  {BRANCHES.map(b => <option key={b} value={b}>{b}</option>)}
                 </select>
-                {errors.division && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.division.message}</p>}
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
               </div>
-              <div>
-                <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                       style={{ color: 'var(--color-on-surface-variant)' }}>Year *</label>
-                <select {...register('year', { required: 'Required' })} className="input-serene">
-                  <option value="">Year</option>
+              {errors.branch && <p className="text-xs text-error mt-1">{errors.branch.message}</p>}
+            </div>
+
+            <div className="md:col-span-3 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Year *</label>
+              <div className="relative">
+                <select 
+                  {...register('year', { required: 'Required' })}
+                  className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg appearance-none transition-all outline-none">
+                  <option value="" disabled>Year</option>
                   {YEARS.map(y => <option key={y.value} value={y.value}>{y.label}</option>)}
                 </select>
-                {errors.year && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.year.message}</p>}
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
               </div>
+              {errors.year && <p className="text-xs text-error mt-1">{errors.year.message}</p>}
             </div>
 
-            {/* Hostel / Day */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>Status *</label>
-              <div className="flex gap-3">
+            <div className="md:col-span-3 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Division *</label>
+              <div className="relative">
+                <select 
+                  {...register('division', { required: 'Required' })}
+                  className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg appearance-none transition-all outline-none">
+                  <option value="" disabled>Div</option>
+                  {DIVISIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+              </div>
+              {errors.division && <p className="text-xs text-error mt-1">{errors.division.message}</p>}
+            </div>
+
+            {/* Toggle Switch */}
+            <div className="md:col-span-12 py-2">
+              <div className="bg-surface-container-low rounded-xl p-1 flex items-center w-fit border border-outline-variant/10">
                 {HOSTEL_STATUS.map(h => (
-                  <label key={h.value} className="flex-1">
-                    <input type="radio" value={h.value} {...register('hostel_or_day', { required: 'Required' })} className="sr-only peer" />
-                    <div className="text-center py-3 rounded-xl cursor-pointer transition-all text-sm font-medium peer-checked:text-white"
-                         style={{ background: 'var(--color-surface-container-low)' }}>
-                      <style>{`
-                        .peer:checked + div { background: var(--gradient-primary) !important; color: white !important; }
-                      `}</style>
-                      {h.label}
-                    </div>
-                  </label>
+                  <button 
+                    key={h.value}
+                    type="button"
+                    onClick={() => setValue('hostel_or_day', h.value)}
+                    className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
+                      hostelOrDay === h.value 
+                        ? 'bg-primary-container text-white shadow-lg' 
+                        : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                  >
+                    {h.label}
+                  </button>
                 ))}
               </div>
-              {errors.hostel_or_day && <p className="text-xs mt-1" style={{ color: 'var(--color-error)' }}>{errors.hostel_or_day.message}</p>}
+              {errors.hostel_or_day && <p className="text-xs text-error mt-1">{errors.hostel_or_day.message}</p>}
             </div>
 
-            {/* Bio */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>Bio (optional)</label>
-              <textarea {...register('bio')} className="input-serene resize-none" rows={3}
-                        placeholder="Tell us about yourself…" />
+            <div className="md:col-span-12 space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-primary ml-1">Bio</label>
+              <textarea 
+                {...register('bio')}
+                className="w-full bg-surface-container-low/50 border-b-2 border-outline/30 focus:border-primary focus:ring-0 text-on-surface px-4 py-3 rounded-t-lg transition-all outline-none resize-none placeholder:text-on-surface-variant/30" 
+                placeholder="Coffee lover, late-night coder, and looking for someone to explore the campus library's hidden corners with..." 
+                rows="3"
+              ></textarea>
             </div>
 
-            <button type="submit" disabled={submitting} className="btn-primary w-full py-3">
-              {submitting ? 'Creating profile…' : 'Complete Setup →'}
-            </button>
+            {/* Submit Button */}
+            <div className="md:col-span-12 pt-6">
+              <button 
+                type="submit" 
+                disabled={submitting}
+                className="w-full glow-md bg-gradient-to-br from-primary to-primary-container py-4 rounded-full text-on-primary font-bold text-lg tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-3 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer">
+                <span>{submitting ? 'LAUNCHING...' : 'LAUNCH YOUR PROFILE'}</span>
+                <span className="material-symbols-outlined">rocket_launch</span>
+              </button>
+            </div>
           </form>
         </div>
-      </div>
+
+        {/* Secondary Guidance */}
+        <p className="mt-8 text-center text-on-surface-variant text-sm font-medium italic opacity-60 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          "Your profile is your digital aura. Make it shine."
+        </p>
+      </main>
     </div>
   );
 }

@@ -5,11 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
-import {
-  PaperAirplaneIcon,
-  ArrowLeftIcon,
-  MagnifyingGlassIcon,
-} from '@heroicons/react/24/outline';
 
 export default function Messages() {
   const { profile } = useAuth();
@@ -17,7 +12,7 @@ export default function Messages() {
   const targetUserId = searchParams.get('user');
 
   const [conversations, setConversations] = useState([]);
-  const [activeChat, setActiveChat] = useState(null);  // { id, full_name, profile_photo_url }
+  const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loadingConvos, setLoadingConvos] = useState(true);
@@ -26,17 +21,14 @@ export default function Messages() {
   const [searchConvo, setSearchConvo] = useState('');
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Fetch conversations list
   const fetchConversations = async () => {
     if (!profile) return;
     setLoadingConvos(true);
 
-    // Get all messages where user is sender or receiver
     const { data: allMessages, error } = await supabase
       .from('messages')
       .select('*, sender:users!sender_id(id, full_name, profile_photo_url), receiver:users!receiver_id(id, full_name, profile_photo_url)')
@@ -49,7 +41,6 @@ export default function Messages() {
       return;
     }
 
-    // Group by conversation partner
     const convMap = new Map();
     for (const msg of (allMessages || [])) {
       const partnerId = msg.sender_id === profile.id ? msg.receiver_id : msg.sender_id;
@@ -72,7 +63,6 @@ export default function Messages() {
     setLoadingConvos(false);
   };
 
-  // Open a chat with a specific user
   const openChat = async (chatUser) => {
     setActiveChat(chatUser);
     setLoadingMessages(true);
@@ -87,7 +77,6 @@ export default function Messages() {
     setMessages(data || []);
     setLoadingMessages(false);
 
-    // Mark messages as read
     await supabase
       .from('messages')
       .update({ is_read: true })
@@ -95,7 +84,6 @@ export default function Messages() {
       .eq('receiver_id', profile.id)
       .eq('is_read', false);
 
-    // Update conversations unread count
     setConversations(prev =>
       prev.map(c => c.user.id === chatUser.id ? { ...c, unread: 0 } : c)
     );
@@ -103,12 +91,10 @@ export default function Messages() {
     setTimeout(scrollToBottom, 100);
   };
 
-  // Send message
   const handleSend = async () => {
     const trimmed = newMessage.trim();
     if (!trimmed || !activeChat) return;
 
-    // Check if blocked
     const { data: blocked } = await supabase
       .from('blocked_users')
       .select('id')
@@ -123,7 +109,6 @@ export default function Messages() {
     setSending(true);
     setNewMessage('');
 
-    // Optimistic update
     const optimistic = {
       id: `temp-${Date.now()}`,
       sender_id: profile.id,
@@ -154,12 +139,10 @@ export default function Messages() {
     setSending(false);
   };
 
-  // Initial load
   useEffect(() => {
     fetchConversations();
   }, [profile]);
 
-  // Open chat from URL param
   useEffect(() => {
     if (targetUserId && profile) {
       (async () => {
@@ -173,7 +156,6 @@ export default function Messages() {
     }
   }, [targetUserId, profile]);
 
-  // Realtime subscription for new messages
   useEffect(() => {
     if (!profile) return;
 
@@ -184,14 +166,11 @@ export default function Messages() {
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${profile.id}` },
         (payload) => {
           const msg = payload.new;
-          // If chat is open with sender, add message
           if (activeChat && msg.sender_id === activeChat.id) {
             setMessages(prev => [...prev, msg]);
             setTimeout(scrollToBottom, 50);
-            // Mark as read
             supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
           }
-          // Refresh conversation list
           fetchConversations();
         }
       )
@@ -206,167 +185,170 @@ export default function Messages() {
 
   const getAvatar = (u) => u?.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(u?.full_name || 'U')}&background=82c6f1&color=003f5a`;
 
-  return (
-    <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
-      <Navbar />
-      <main className="max-w-5xl mx-auto px-4 py-6 pb-24 md:pb-6">
-        <div className="card overflow-hidden" style={{ height: 'calc(100vh - 140px)', minHeight: '500px' }}>
-          <div className="flex h-full">
-            {/* Conversations List */}
-            <div className={`${activeChat ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-80 lg:w-96`}
-                 style={{ borderRight: '1px solid rgba(169,180,185,0.12)' }}>
-              <div className="p-4" style={{ borderBottom: '1px solid rgba(169,180,185,0.12)' }}>
-                <h2 className="text-lg font-semibold mb-3" style={{ color: 'var(--color-on-surface)' }}>Messages</h2>
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2"
-                                       style={{ width: '16px', height: '16px', color: 'var(--color-outline)' }} />
-                  <input
-                    value={searchConvo}
-                    onChange={(e) => setSearchConvo(e.target.value)}
-                    placeholder="Search conversations…"
-                    className="input-serene pl-9 text-sm py-2"
-                  />
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto">
-                {loadingConvos ? (
-                  <div className="p-4 space-y-3">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="flex gap-3 items-center">
-                        <div className="skeleton w-11 h-11 rounded-full" />
-                        <div className="flex-1">
-                          <div className="skeleton h-4 w-28 mb-1.5" />
-                          <div className="skeleton h-3 w-40" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : filteredConvos.length === 0 ? (
-                  <div className="p-8 text-center">
-                    <p className="text-sm" style={{ color: 'var(--color-outline)' }}>
-                      {conversations.length === 0 ? 'No conversations yet' : 'No results'}
-                    </p>
-                  </div>
-                ) : (
-                  filteredConvos.map(c => (
-                    <button
-                      key={c.user.id}
-                      onClick={() => openChat(c.user)}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors"
-                      style={{
-                        border: 'none',
-                        background: activeChat?.id === c.user.id ? 'var(--color-surface-container-low)' : 'transparent',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <img src={getAvatar(c.user)} alt="" className="avatar" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm truncate" style={{ color: 'var(--color-on-surface)' }}>
-                            {c.user.full_name}
-                          </span>
-                          <span className="text-xs flex-shrink-0 ml-2" style={{ color: 'var(--color-outline)' }}>
-                            {c.lastMessage.created_at && formatDistanceToNow(new Date(c.lastMessage.created_at), { addSuffix: false })}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs truncate" style={{ color: 'var(--color-on-surface-variant)' }}>
-                            {c.lastMessage.sender_id === profile.id ? 'You: ' : ''}{c.lastMessage.content}
-                          </p>
-                          {c.unread > 0 && <span className="badge ml-2 flex-shrink-0">{c.unread}</span>}
-                        </div>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
+  if (activeChat) {
+    return (
+      <div className="bg-surface-container-lowest text-on-surface min-h-screen flex flex-col">
+        {/* Chat Header */}
+        <header className="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl flex justify-between items-center px-6 py-4 shadow-[0_0_20px_rgba(233,30,140,0.1)] border-b border-white/5">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setActiveChat(null)} className="hover:scale-105 transition-transform active:scale-95 duration-200 text-on-surface">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div className="relative">
+              <img src={getAvatar(activeChat)} alt={activeChat.full_name} className="w-10 h-10 rounded-full object-cover border border-outline-variant/30" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-tertiary rounded-full border-2 border-surface-dim"></div>
             </div>
-
-            {/* Chat Area */}
-            <div className={`${activeChat ? 'flex' : 'hidden md:flex'} flex-col flex-1`}>
-              {activeChat ? (
-                <>
-                  {/* Chat Header */}
-                  <div className="flex items-center gap-3 px-4 py-3"
-                       style={{ borderBottom: '1px solid rgba(169,180,185,0.12)' }}>
-                    <button onClick={() => setActiveChat(null)} className="md:hidden"
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-on-surface)' }}>
-                      <ArrowLeftIcon className="w-5 h-5" />
-                    </button>
-                    <img src={getAvatar(activeChat)} alt="" className="avatar" />
-                    <div>
-                      <h3 className="font-semibold text-sm" style={{ color: 'var(--color-on-surface)' }}>{activeChat.full_name}</h3>
-                    </div>
-                  </div>
-
-                  {/* Messages */}
-                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ background: 'var(--color-surface-container-low)' }}>
-                    {loadingMessages ? (
-                      <div className="space-y-3">
-                        {[1, 2, 3].map(i => <div key={i} className="skeleton h-10 w-48 rounded-xl" />)}
-                      </div>
-                    ) : messages.length === 0 ? (
-                      <div className="text-center py-12">
-                        <p className="text-sm" style={{ color: 'var(--color-outline)' }}>
-                          Start the conversation 👋
-                        </p>
-                      </div>
-                    ) : (
-                      messages.map(msg => {
-                        const isMine = msg.sender_id === profile.id;
-                        return (
-                          <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                            <div
-                              className="max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl text-sm"
-                              style={{
-                                background: isMine ? 'var(--gradient-primary)' : 'var(--color-surface-container-lowest)',
-                                color: isMine ? 'white' : 'var(--color-on-surface)',
-                                borderBottomRightRadius: isMine ? '0.25rem' : '1rem',
-                                borderBottomLeftRadius: isMine ? '1rem' : '0.25rem',
-                                boxShadow: 'var(--shadow-soft)',
-                              }}
-                            >
-                              <p style={{ wordBreak: 'break-word' }}>{msg.content}</p>
-                              <p className="text-xs mt-1" style={{ opacity: 0.7 }}>
-                                {msg.created_at && new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  {/* Message Input */}
-                  <div className="px-4 py-3 flex items-center gap-3"
-                       style={{ borderTop: '1px solid rgba(169,180,185,0.12)' }}>
-                    <input
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Type your message…"
-                      className="input-serene flex-1 text-sm"
-                      onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                    />
-                    <button onClick={handleSend} disabled={sending || !newMessage.trim()} className="btn-primary py-2.5 px-4 flex items-center gap-1.5">
-                      Send <PaperAirplaneIcon className="w-4 h-4" />
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-                         style={{ background: 'var(--color-surface-container)' }}>
-                      <PaperAirplaneIcon className="w-7 h-7" style={{ color: 'var(--color-primary-fixed-dim)' }} />
-                    </div>
-                    <p className="text-sm" style={{ color: 'var(--color-outline)' }}>Select a conversation to start chatting</p>
-                  </div>
-                </div>
-              )}
+            <div>
+              <h1 className="font-serif italic font-bold text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-pink-600 text-xl tracking-tighter truncate max-w-[150px] sm:max-w-[250px]">{activeChat.full_name}</h1>
+              <p className="text-[10px] font-sans font-bold uppercase tracking-widest text-tertiary">Online now</p>
             </div>
           </div>
+          <div className="flex items-center gap-4">
+            <button className="text-on-surface-variant hover:text-primary transition-colors">
+              <span className="material-symbols-outlined">videocam</span>
+            </button>
+            <button className="text-on-surface-variant hover:text-primary transition-colors">
+              <span className="material-symbols-outlined">info</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Chat Area */}
+        <main className="flex-1 pt-24 pb-32 px-4 overflow-y-auto chat-scroll flex flex-col gap-6 max-w-3xl mx-auto w-full relative z-10">
+          {loadingMessages ? (
+             <div className="flex justify-center my-4">
+               <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+             </div>
+          ) : messages.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <span className="material-symbols-outlined text-6xl text-primary/30 mb-4 block animate-fade-in-up">waving_hand</span>
+                <p className="text-on-surface-variant text-sm font-medium animate-fade-in-up" style={{ animationDelay: '0.1s' }}>Say hello to {activeChat.full_name}!</p>
+              </div>
+            </div>
+          ) : (
+            messages.map((msg, i) => {
+              const isMine = msg.sender_id === profile.id;
+              return (
+                <div key={msg.id} className={`flex flex-col ${isMine ? 'items-end self-end' : 'items-start'} max-w-[85%] gap-2 animate-fade-in-up`} style={{ animationDelay: `${Math.min(i * 0.05, 1)}s` }}>
+                  <div className={`px-5 py-4 font-medium text-sm ${isMine ? 'bg-gradient-to-br from-primary to-primary-container text-on-primary-container shadow-[0_0_20px_rgba(255,70,160,0.3)] rounded-tl-xl rounded-bl-xl rounded-br-xl' : 'glass-card border border-outline-variant/15 text-on-surface rounded-tr-xl rounded-bl-xl rounded-br-xl'}`}>
+                    <p style={{ wordBreak: 'break-word' }}>{msg.content}</p>
+                  </div>
+                  <span className={`text-[10px] text-outline font-medium ${isMine ? 'mr-2' : 'ml-2'}`}>
+                    {msg.created_at && new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              );
+            })
+          )}
+          <div ref={messagesEndRef} />
+        </main>
+
+        {/* Bottom Input Bar */}
+        <footer className="fixed bottom-0 left-0 w-full z-50 bg-slate-950/60 backdrop-blur-2xl px-6 pb-8 pt-4 flex items-center justify-center border-t border-white/5">
+          <div className="max-w-3xl w-full flex items-center gap-4">
+            <button className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full bg-surface-container-highest hover:bg-surface-variant transition-colors text-on-surface-variant">
+              <span className="material-symbols-outlined">add</span>
+            </button>
+            <div className="flex-1 relative flex items-center">
+              <input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                className="w-full bg-surface-container-high/40 border border-outline-variant/15 rounded-full py-3.5 pl-5 pr-12 text-on-surface placeholder-outline focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all text-sm"
+                placeholder="Type a message..."
+                type="text"
+              />
+              <button className="absolute right-4 text-outline hover:text-primary transition-colors">
+                <span className="material-symbols-outlined">image</span>
+              </button>
+            </div>
+            <button onClick={handleSend} disabled={sending || !newMessage.trim()} className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary to-primary-container rounded-full text-on-primary-container shadow-[0_0_15px_rgba(233,30,140,0.3)] hover:scale-105 active:scale-95 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+            </button>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // Conversation List View
+  return (
+    <div className="bg-surface-container-lowest min-h-screen pb-32 overflow-x-hidden relative">
+      {/* Ambient Glow Effects */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+      
+      <Navbar />
+      
+      <main className="pt-24 px-6 max-w-2xl mx-auto relative z-10">
+        {/* Editorial Header */}
+        <div className="mb-10 mt-6 space-y-2 animate-fade-in">
+          <div className="flex justify-between items-end">
+            <h1 className="font-headline text-5xl font-bold tracking-tight text-on-surface italic drop-shadow-[0_0_20px_rgba(233,30,140,0.4)]">Messages</h1>
+            <button className="w-12 h-12 glass-card rounded-full flex items-center justify-center text-primary shadow-[0_0_15px_rgba(233,30,140,0.2)] hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined">search</span>
+            </button>
+          </div>
+          <p className="font-body text-on-surface-variant/70 text-lg ml-1">Spark connections through conversation.</p>
+        </div>
+
+        {/* Conversation List */}
+        <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          {loadingConvos ? (
+             <div className="space-y-4">
+               {[1, 2, 3].map(i => (
+                 <div key={i} className="glass-card p-4 rounded-lg flex items-center gap-4 animate-pulse">
+                   <div className="w-12 h-12 rounded-full bg-surface-container-high/50" />
+                   <div className="flex-1">
+                     <div className="h-5 w-32 bg-surface-container-high/50 rounded mb-2" />
+                     <div className="h-4 w-48 bg-surface-container-high/50 rounded" />
+                   </div>
+                 </div>
+               ))}
+             </div>
+          ) : filteredConvos.length === 0 ? (
+             <div className="glass-card p-12 rounded-3xl text-center border border-outline-variant/10 mt-8 animate-fade-in-up">
+               <span className="material-symbols-outlined text-6xl text-primary/30 mb-4 block">forum</span>
+               <p className="text-xl font-headline font-bold mb-2 text-on-surface">No conversations yet</p>
+               <p className="text-sm text-on-surface-variant leading-relaxed max-w-md mx-auto">
+                 Find people on the Discover page to start chatting!
+               </p>
+             </div>
+          ) : (
+            filteredConvos.map((c, i) => {
+              const hasUnread = c.unread > 0;
+              return (
+                <div 
+                  key={c.user.id} 
+                  onClick={() => openChat(c.user)}
+                  className={`animate-fade-in-up p-4 rounded-lg flex items-center gap-4 transition-all group cursor-pointer ${hasUnread ? 'glass-card shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:bg-surface-variant/60' : 'hover:bg-surface-container-high'}`}
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                >
+                  <div className="relative">
+                    <img src={getAvatar(c.user)} alt={c.user.full_name} className={`w-12 h-12 rounded-full object-cover ${hasUnread ? 'outline outline-2 outline-primary/30' : ''}`} />
+                    {hasUnread && <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-tertiary border-2 border-surface-container-lowest rounded-full"></div>}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className={`font-headline font-bold text-lg truncate ${hasUnread ? 'text-on-surface' : 'text-on-surface/80'}`}>{c.user.full_name}</span>
+                      <span className={`text-[10px] uppercase tracking-widest ${hasUnread ? 'font-bold text-primary' : 'font-medium text-on-surface-variant/40'}`}>
+                        {c.lastMessage.created_at && formatDistanceToNow(new Date(c.lastMessage.created_at), { addSuffix: false }).replace('about ', '')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center gap-2">
+                      <p className={`text-sm truncate ${hasUnread ? 'text-on-surface-variant font-medium' : 'text-on-surface-variant/60 italic'}`}>
+                        {c.lastMessage.sender_id === profile.id ? 'You: ' : ''}{c.lastMessage.content}
+                      </p>
+                      {hasUnread && <div className="bg-primary-container text-on-primary-container text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-[0_0_10px_rgba(255,70,160,0.5)] flex-shrink-0">{c.unread}</div>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+          
+          <div className="h-10"></div>
+          <p className="text-center text-[10px] uppercase tracking-[0.3em] text-on-surface-variant/30 font-bold font-sans">End of conversations</p>
         </div>
       </main>
     </div>

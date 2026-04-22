@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { APP_NAME, COLLEGE_NAME, EMAIL_DOMAIN } from '../utils/constants';
+import { APP_NAME, EMAIL_DOMAIN } from '../utils/constants';
 import toast from 'react-hot-toast';
-import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -62,19 +61,23 @@ export default function Signup() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--color-surface)' }}>
-        <div className="card p-8 max-w-md w-full text-center animate-fade-in">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-               style={{ background: 'rgba(173,237,246,0.3)' }}>
-            <EnvelopeIcon className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+      <div className="bg-surface-container-lowest min-h-screen text-on-surface flex items-center justify-center p-4">
+        {/* Atmospheric Background Elements */}
+        <div className="blob-pink -top-20 -left-20"></div>
+        <div className="blob-purple bottom-0 right-0"></div>
+        
+        <div className="glass-card p-10 md:p-14 max-w-md w-full text-center animate-fade-in-up border border-outline-variant/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] relative z-10">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 bg-primary/20">
+            <span className="material-symbols-outlined text-4xl text-primary">mark_email_unread</span>
           </div>
-          <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--color-on-surface)' }}>Check Your Email</h2>
-          <p className="text-sm mb-6" style={{ color: 'var(--color-on-surface-variant)' }}>
-            We've sent a verification link to <strong style={{ color: 'var(--color-on-surface)' }}>{email}</strong>.
+          <h2 className="text-2xl font-bold mb-3 font-headline text-on-surface">Check Your Email</h2>
+          <p className="text-sm mb-8 text-on-surface-variant leading-relaxed">
+            We've sent a verification link to <strong className="text-primary">{email}</strong>.
             Click the link to verify your account, then come back to sign in.
           </p>
-          <Link to="/login" className="btn-primary inline-block no-underline px-6 py-3">
-            Go to Login →
+          <Link to="/login" className="w-full glow-md bg-gradient-to-br from-primary to-primary-container py-4 rounded-full text-on-primary font-bold tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-3">
+            GO TO LOGIN
+            <span className="material-symbols-outlined">arrow_right_alt</span>
           </Link>
         </div>
       </div>
@@ -82,102 +85,142 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--color-surface)' }}>
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-4"
-               style={{ background: 'var(--gradient-primary)' }}>V</div>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-on-surface)' }}>{APP_NAME}</h1>
-          <p className="text-sm" style={{ color: 'var(--color-outline)' }}>Join the {COLLEGE_NAME} community</p>
-        </div>
+    <div className="bg-surface-container-lowest min-h-screen text-on-surface overflow-hidden relative selection:bg-primary-container selection:text-white">
+      {/* Atmospheric Background Elements */}
+      <div className="blob-pink -top-20 -left-20"></div>
+      <div className="blob-purple bottom-0 right-0"></div>
 
-        {/* Card */}
-        <div className="card p-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--color-on-surface)' }}>Create Account</h2>
-          <p className="text-xs mb-6" style={{ color: 'var(--color-outline)' }}>
-            Use your college email (<strong>{EMAIL_DOMAIN}</strong>) to sign up
-          </p>
+      <main className="relative z-10 min-h-screen flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-lg">
+          
+          {/* Glassmorphism Card */}
+          <div className="glass-card p-10 md:p-14 rounded-3xl border border-outline-variant/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] animate-fade-in-up">
+            
+            {/* Branding Header */}
+            <header className="text-center mb-10">
+              <h1 className="text-5xl md:text-6xl font-bold italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-primary to-primary-container mb-3 font-headline">
+                {APP_NAME}
+              </h1>
+              <p className="font-headline italic text-on-surface-variant text-lg tracking-wide">
+                Join the community.
+              </p>
+            </header>
 
-          <form onSubmit={handleSignup} className="space-y-4">
-            {/* Email */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>
-                College Email
-              </label>
-              <div className="relative">
-                <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2"
-                              style={{ color: 'var(--color-outline)', width: '18px', height: '18px' }} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={`yourname${EMAIL_DOMAIN}`}
-                  className="input-serene pl-10"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>
-                Password
-              </label>
-              <div className="relative">
-                <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2"
-                                style={{ color: 'var(--color-outline)', width: '18px', height: '18px' }} />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min 6 characters"
-                  className="input-serene pl-10 pr-10"
-                />
-                <button type="button" onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2"
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-outline)' }}>
-                  {showPassword
-                    ? <EyeSlashIcon style={{ width: '18px', height: '18px' }} />
-                    : <EyeIcon style={{ width: '18px', height: '18px' }} />}
+            {/* Auth Mode Switcher */}
+            <nav className="flex justify-center mb-12 relative">
+              <div className="flex gap-10">
+                <Link to="/login" className="pb-2 text-on-surface/50 font-medium tracking-wider hover:text-on-surface transition-colors">
+                  Login
+                </Link>
+                <button className="relative pb-2 text-primary font-semibold tracking-wider">
+                  Sign Up
+                  <span className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary to-primary-container rounded-full"></span>
                 </button>
               </div>
-            </div>
+            </nav>
 
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>
-                Confirm Password
-              </label>
-              <div className="relative">
-                <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2"
-                                style={{ color: 'var(--color-outline)', width: '18px', height: '18px' }} />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter password"
-                  className="input-serene pl-10"
-                />
+            {/* Form Section */}
+            <form className="space-y-6" onSubmit={handleSignup}>
+              
+              {/* Email Input */}
+              <div className="group relative">
+                <label className="block text-xs font-bold uppercase tracking-[0.2em] text-primary/80 mb-2 ml-1">College Email</label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 group-focus-within:text-primary transition-colors">mail</span>
+                  <input 
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-surface-container-low/50 border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-high transition-all outline-none" 
+                    placeholder={`yourname${EMAIL_DOMAIN}`} 
+                  />
+                </div>
               </div>
+
+              {/* Password Input */}
+              <div className="group relative">
+                <label className="block text-xs font-bold uppercase tracking-[0.2em] text-primary/80 mb-2 ml-1">Password</label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 group-focus-within:text-primary transition-colors">lock</span>
+                  <input 
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-surface-container-low/50 border-none rounded-xl py-4 pl-12 pr-12 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-high transition-all outline-none" 
+                    placeholder="Min 6 characters" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-outline/60 hover:text-on-surface transition-colors">
+                    <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm Password Input */}
+              <div className="group relative">
+                <label className="block text-xs font-bold uppercase tracking-[0.2em] text-primary/80 mb-2 ml-1">Confirm Password</label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 group-focus-within:text-primary transition-colors">lock</span>
+                  <input 
+                    type={showPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-surface-container-low/50 border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-high transition-all outline-none" 
+                    placeholder="Re-enter password" 
+                  />
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <div className="pt-4">
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full glow-md bg-gradient-to-br from-primary to-primary-container py-4 rounded-full text-on-primary font-bold text-lg tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-3 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer">
+                  {loading ? 'WAITING...' : 'CREATE ACCOUNT'}
+                  <span className="material-symbols-outlined">arrow_right_alt</span>
+                </button>
+              </div>
+
+            </form>
+
+            {/* Footer Restriction Note */}
+            <footer className="mt-10 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tertiary/10 border border-tertiary/20">
+                <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                <span className="text-xs font-semibold text-tertiary tracking-wide">
+                  Only {EMAIL_DOMAIN} emails allowed.
+                </span>
+              </div>
+            </footer>
+          </div>
+
+          {/* Social/Secondary Proof */}
+          <div className="mt-12 flex justify-center gap-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">shield_person</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Verified</span>
             </div>
-
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3">
-              {loading ? 'Creating account…' : 'Create Account →'}
-            </button>
-          </form>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">security</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Encrypted</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">school</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Exclusive</span>
+            </div>
+          </div>
+          
         </div>
-
-        {/* Footer */}
-        <p className="text-center mt-6 text-sm animate-fade-in" style={{ color: 'var(--color-outline)', animationDelay: '0.2s' }}>
-          Already have an account?{' '}
-          <Link to="/login" className="font-semibold no-underline" style={{ color: 'var(--color-primary)' }}>
-            Sign In
-          </Link>
-        </p>
-      </div>
+      </main>
     </div>
   );
 }
