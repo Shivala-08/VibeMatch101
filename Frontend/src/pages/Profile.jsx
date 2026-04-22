@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import PostCard from '../components/PostCard';
-import { PencilIcon } from '@heroicons/react/24/outline';
 
 export default function Profile() {
   const { profile } = useAuth();
@@ -19,7 +18,7 @@ export default function Profile() {
       setLoading(true);
       const { data } = await supabase
         .from('posts')
-        .select('*, author:users(full_name, profile_photo_url)')
+        .select('*, author:users(full_name, profile_photo_url, branch)')
         .eq('user_id', profile.id)
         .order('created_at', { ascending: false });
 
@@ -35,6 +34,41 @@ export default function Profile() {
     }
 
     fetchMyPosts();
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel(`public:posts:profile=${profile.id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'posts', filter: `user_id=eq.${profile.id}` },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            (async () => {
+              const { data: newPost } = await supabase
+                .from('posts')
+                .select('*, author:users(full_name, profile_photo_url, branch)')
+                .eq('id', payload.new.id)
+                .single();
+              
+              if (newPost) {
+                setPosts(prev => {
+                  if (prev.some(p => p.id === newPost.id)) return prev;
+                  return [{ ...newPost, user_liked: false }, ...prev];
+                });
+              }
+            })();
+          } else if (payload.eventType === 'DELETE') {
+            setPosts(prev => prev.filter(p => p.id !== payload.old.id));
+          } else if (payload.eventType === 'UPDATE') {
+            setPosts(prev => prev.map(p => 
+              p.id === payload.new.id ? { ...p, ...payload.new } : p
+            ));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
   }, [profile]);
 
   if (!profile) return null;
@@ -43,66 +77,78 @@ export default function Profile() {
     || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.full_name)}&background=82c6f1&color=003f5a&size=200`;
 
   return (
-    <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
+    <div className="bg-background min-h-screen pb-32 relative">
+      {/* Ambient Glow Effects */}
+      <div className="fixed top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+      
       <Navbar />
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
-        {/* Profile Header */}
-        <div className="card p-6 mb-6 animate-fade-in">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            <img src={avatar} alt={profile.full_name} className="w-24 h-24 rounded-full object-cover"
-                 style={{ border: '3px solid var(--color-primary-container)' }} />
-            <div className="flex-1 text-center sm:text-left">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                <h1 className="text-xl font-bold" style={{ color: 'var(--color-on-surface)' }}>{profile.full_name}</h1>
-                <button onClick={() => navigate('/edit-profile')} className="btn-secondary flex items-center gap-1.5 text-sm mt-2 sm:mt-0">
-                  <PencilIcon className="w-4 h-4" /> Edit Profile
-                </button>
-              </div>
-              {profile.bio && (
-                <p className="text-sm mb-3" style={{ color: 'var(--color-on-surface-variant)' }}>{profile.bio}</p>
-              )}
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <span className="chip">{profile.branch}</span>
-                <span className="chip">{profile.year}</span>
-                <span className="chip">Div {profile.division}</span>
-                <span className="chip">{profile.hostel_or_day}</span>
-              </div>
+      
+      <main className="pt-16 max-w-3xl mx-auto pb-24 relative z-10">
+        {/* Profile Banner Section */}
+        <section className="relative animate-fade-in">
+          <div className="h-[130px] w-full bg-gradient-to-r from-primary-container to-secondary-container opacity-80"></div>
+          
+          {/* Profile Info Container */}
+          <div className="px-6 flex flex-col items-center -mt-12 mb-8 relative z-10">
+            <div className="w-[84px] h-[84px] rounded-full ring-4 ring-background shadow-xl overflow-hidden mb-4 bg-surface-container">
+              <img src={avatar} alt={profile.full_name} className="w-full h-full object-cover" />
+            </div>
+            <h1 className="font-headline font-bold text-[22px] text-on-surface tracking-tight mb-2">{profile.full_name}</h1>
+            
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              {profile.branch && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{profile.branch}</span>}
+              {profile.year && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{profile.year}</span>}
+              {profile.hostel_or_day && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{profile.hostel_or_day}</span>}
+            </div>
+            
+            {profile.bio && (
+              <p className="text-center italic text-on-surface-variant font-body leading-relaxed max-w-xs mb-6 opacity-80">
+                "{profile.bio}"
+              </p>
+            )}
+            
+            <div className="flex gap-3 w-full max-w-sm">
+              <button onClick={() => navigate('/edit-profile')} className="w-full py-3 rounded-full border-2 border-primary text-primary font-bold tracking-wide hover:bg-primary/10 transition-all active:scale-95 duration-200 flex justify-center items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">edit</span>
+                Edit Profile
+              </button>
             </div>
           </div>
-
-          {/* Stats */}
-          <div className="flex items-center justify-around mt-6 pt-4" style={{ borderTop: '1px solid rgba(169,180,185,0.12)' }}>
-            <div className="text-center">
-              <p className="text-xl font-bold" style={{ color: 'var(--color-on-surface)' }}>{posts.length}</p>
-              <p className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-outline)' }}>Posts</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold" style={{ color: 'var(--color-on-surface)' }}>{profile.age}</p>
-              <p className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-outline)' }}>Age</p>
-            </div>
+        </section>
+        
+        {/* Divider */}
+        <div className="h-8 bg-gradient-to-b from-surface-container-low/30 to-transparent mb-8"></div>
+        
+        {/* Posts Section */}
+        <section className="px-6 space-y-6">
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="font-headline text-2xl font-bold text-on-surface tracking-tight">Your Activity</h2>
+            <div className="h-1 w-12 bg-primary rounded-full"></div>
           </div>
-        </div>
-
-        {/* Posts */}
-        <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-on-surface)' }}>Recent Activity</h2>
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2].map(i => (
-              <div key={i} className="card p-5">
-                <div className="skeleton h-4 w-full mb-2" />
-                <div className="skeleton h-4 w-3/4" />
+          
+          <div className="flex flex-col gap-6">
+            {loading ? (
+              <div className="space-y-6">
+                {[1, 2].map(i => (
+                  <div key={i} className="glass-card p-6 rounded-3xl animate-pulse">
+                    <div className="h-4 w-full bg-surface-container-high/50 rounded mb-2" />
+                    <div className="h-4 w-3/4 bg-surface-container-high/50 rounded" />
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : posts.length === 0 ? (
+              <div className="glass-card p-12 text-center rounded-3xl border border-outline-variant/10 animate-fade-in-up">
+                <p className="text-sm text-on-surface-variant font-medium">No posts yet. Share your first thought!</p>
+              </div>
+            ) : (
+              posts.map((p, i) => (
+                <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <PostCard post={p} onDelete={(id) => setPosts(prev => prev.filter(x => x.id !== id))} />
+                </div>
+              ))
+            )}
           </div>
-        ) : posts.length === 0 ? (
-          <div className="card p-8 text-center">
-            <p className="text-sm" style={{ color: 'var(--color-outline)' }}>No posts yet. Share your first thought!</p>
-          </div>
-        ) : (
-          posts.map(p => (
-            <PostCard key={p.id} post={p} onDelete={(id) => setPosts(prev => prev.filter(x => x.id !== id))} />
-          ))
-        )}
+        </section>
       </main>
     </div>
   );

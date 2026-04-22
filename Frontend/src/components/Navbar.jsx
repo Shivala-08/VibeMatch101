@@ -3,27 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { APP_NAME } from '../utils/constants';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import {
-  HomeIcon,
-  MagnifyingGlassIcon,
-  ChatBubbleLeftRightIcon,
-  UserCircleIcon,
-  ArrowRightOnRectangleIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
-import {
-  HomeIcon as HomeIconSolid,
-  MagnifyingGlassIcon as MagnifyingGlassIconSolid,
-  ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconSolid,
-  UserCircleIcon as UserCircleIconSolid,
-} from '@heroicons/react/24/solid';
 
 const navItems = [
-  { path: '/', label: 'Feed', Icon: HomeIcon, ActiveIcon: HomeIconSolid },
-  { path: '/discover', label: 'Discover', Icon: MagnifyingGlassIcon, ActiveIcon: MagnifyingGlassIconSolid },
-  { path: '/messages', label: 'Messages', Icon: ChatBubbleLeftRightIcon, ActiveIcon: ChatBubbleLeftRightIconSolid },
-  { path: '/profile', label: 'Profile', Icon: UserCircleIcon, ActiveIcon: UserCircleIconSolid },
+  { path: '/', label: 'Home', icon: 'home' },
+  { path: '/discover', label: 'Discover', icon: 'explore' },
+  { path: '/messages', label: 'Messages', icon: 'chat_bubble' },
+  { path: '/profile', label: 'Profile', icon: 'person' },
 ];
 
 export default function Navbar() {
@@ -31,12 +16,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { signOut, profile } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Fetch unread messages count
   useEffect(() => {
     if (!profile) return;
-
     async function fetchUnread() {
       const { count } = await supabase
         .from('messages')
@@ -45,10 +27,7 @@ export default function Navbar() {
         .eq('is_read', false);
       setUnreadCount(count || 0);
     }
-
     fetchUnread();
-
-    // Listen for new messages
     const channel = supabase
       .channel('navbar-unread')
       .on(
@@ -62,99 +41,56 @@ export default function Navbar() {
         () => fetchUnread()
       )
       .subscribe();
-
     return () => supabase.removeChannel(channel);
   }, [profile]);
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
-  };
-
   return (
     <>
-      {/* Desktop Navbar */}
-      <nav className="glass-nav fixed top-0 left-0 right-0 z-50 hidden md:block"
-           style={{ borderBottom: '1px solid rgba(169,180,185,0.15)' }}>
-        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 no-underline">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                 style={{ background: 'var(--gradient-primary)' }}>V</div>
-            <span className="font-semibold text-base" style={{ color: 'var(--color-on-surface)', letterSpacing: '-0.02em' }}>
-              {APP_NAME}
-            </span>
-          </Link>
-
-          {/* Nav Links */}
-          <div className="flex items-center gap-1">
-            {navItems.map(({ path, label, Icon, ActiveIcon }) => {
-              const isActive = location.pathname === path;
-              const IconComponent = isActive ? ActiveIcon : Icon;
-              return (
-                <Link
-                  key={path}
-                  to={path}
-                  className="relative flex items-center gap-2 px-4 py-2 rounded-xl no-underline transition-all"
-                  style={{
-                    color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
-                    background: isActive ? 'rgba(130,198,241,0.12)' : 'transparent',
-                    fontWeight: isActive ? 600 : 400,
-                    fontSize: '0.9rem',
-                  }}
-                >
-                  <IconComponent className="w-5 h-5" />
-                  {label}
-                  {label === 'Messages' && unreadCount > 0 && (
-                    <span className="badge absolute -top-1 left-6">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Sign Out */}
-          <button onClick={handleSignOut} className="btn-secondary flex items-center gap-2 text-sm">
-            <ArrowRightOnRectangleIcon className="w-4 h-4" />
-            Sign Out
+      {/* Top Navbar */}
+      <nav className="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-none shadow-[0_0_20px_rgba(233,30,140,0.1)] flex justify-between items-center px-6 py-4">
+        <Link to="/" className="font-headline italic font-bold text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-pink-600 text-2xl tracking-tighter hover:opacity-80 transition-opacity no-underline">
+          {APP_NAME}
+        </Link>
+        <div className="flex items-center gap-6">
+          <button className="text-slate-400 hover:text-pink-400 hover:scale-105 transition-all active:scale-95 duration-200 cursor-pointer bg-transparent border-none">
+            <span className="material-symbols-outlined text-[28px]">notifications</span>
+          </button>
+          <button className="text-slate-400 hover:text-pink-400 hover:scale-105 transition-all active:scale-95 duration-200 cursor-pointer bg-transparent border-none">
+            <span className="material-symbols-outlined text-[28px]">favorite</span>
           </button>
         </div>
       </nav>
 
-      {/* Mobile Bottom Nav */}
-      <nav className="glass-nav fixed bottom-0 left-0 right-0 z-50 md:hidden"
-           style={{ borderTop: '1px solid rgba(169,180,185,0.15)' }}>
-        <div className="flex items-center justify-around h-16 px-2">
-          {navItems.map(({ path, label, Icon, ActiveIcon }) => {
-            const isActive = location.pathname === path;
-            const IconComponent = isActive ? ActiveIcon : Icon;
-            return (
-              <Link
-                key={path}
-                to={path}
-                className="relative flex flex-col items-center gap-0.5 no-underline px-3 py-1"
-                style={{
-                  color: isActive ? 'var(--color-primary)' : 'var(--color-on-surface-variant)',
-                }}
+      {/* Bottom Navbar */}
+      <nav className="fixed bottom-0 left-0 w-full z-50 bg-slate-950/60 backdrop-blur-2xl border-t border-white/5 shadow-[0_-4px_30px_rgba(0,0,0,0.5)] flex justify-around items-center px-4 pb-8 pt-4 rounded-t-[2.5rem]">
+        {navItems.map(({ path, label, icon }) => {
+          const isActive = location.pathname === path;
+          return (
+            <Link
+              key={path}
+              to={path}
+              className={`flex flex-col items-center justify-center group active:scale-90 duration-300 relative no-underline ${
+                isActive 
+                  ? 'text-pink-500 bg-pink-500/10 rounded-full px-5 py-2 shadow-[0_0_15px_rgba(233,30,140,0.3)]' 
+                  : 'text-slate-500 px-5 py-2 hover:text-pink-300 transition-colors'
+              }`}
+            >
+              <span 
+                className="material-symbols-outlined text-2xl" 
+                style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}
               >
-                <IconComponent className="w-6 h-6" />
-                <span className="text-xs" style={{ fontWeight: isActive ? 600 : 400 }}>{label}</span>
-                {label === 'Messages' && unreadCount > 0 && (
-                  <span className="badge absolute -top-1 right-0">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                )}
-              </Link>
-            );
-          })}
-          <button onClick={handleSignOut} className="flex flex-col items-center gap-0.5 px-3 py-1"
-                  style={{ color: 'var(--color-on-surface-variant)', background: 'none', border: 'none' }}>
-            <ArrowRightOnRectangleIcon className="w-6 h-6" />
-            <span className="text-xs">Logout</span>
-          </button>
-        </div>
+                {icon}
+              </span>
+              <span className="font-sans text-[10px] font-bold uppercase tracking-widest mt-1">
+                {label}
+              </span>
+              {label === 'Messages' && unreadCount > 0 && (
+                <div className="absolute top-2 right-4 w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
+              )}
+            </Link>
+          );
+        })}
       </nav>
-
-      {/* Spacers */}
-      <div className="hidden md:block h-16" />
     </>
   );
 }

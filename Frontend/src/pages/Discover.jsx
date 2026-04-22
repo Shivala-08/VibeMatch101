@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { BRANCHES, YEARS, HOSTEL_STATUS } from '../utils/constants';
 import Navbar from '../components/Navbar';
 import UserCard from '../components/UserCard';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function Discover() {
   const { profile } = useAuth();
@@ -49,110 +48,90 @@ export default function Discover() {
   const ChipButton = ({ active, onClick, children }) => (
     <button
       onClick={onClick}
-      className="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all"
-      style={{
-        background: active ? 'var(--gradient-primary)' : 'var(--color-surface-container-low)',
-        color: active ? 'white' : 'var(--color-on-surface-variant)',
-        border: 'none',
-        cursor: 'pointer',
-      }}
+      className={`whitespace-nowrap px-6 py-2.5 rounded-full font-bold text-sm transition-transform active:scale-95 cursor-pointer border-none ${
+        active 
+          ? 'bg-gradient-to-br from-primary to-primary-container text-on-primary-container shadow-[0_0_15px_rgba(233,30,140,0.3)]' 
+          : 'bg-surface-container-highest text-on-surface hover:bg-surface-bright'
+      }`}
     >
       {children}
     </button>
   );
 
   return (
-    <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
+    <div className="bg-background min-h-screen pb-32">
+      {/* Ambient Glow Effects */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary-container/10 blur-[150px] pointer-events-none z-0"></div>
+
       <Navbar />
-      <main className="max-w-5xl mx-auto px-4 py-6 pb-24 md:pb-6">
-        {/* Header */}
-        <div className="mb-8 animate-fade-in">
-          <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--color-on-surface)' }}>
-            Find your <em style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>tribe</em>.
-          </h1>
-          <p className="text-sm" style={{ color: 'var(--color-outline)' }}>
-            Discover students across the community based on shared academic paths and lifestyles.
-          </p>
-        </div>
 
-        {/* Search */}
-        <div className="card p-4 mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2"
-                                 style={{ width: '18px', height: '18px', color: 'var(--color-outline)' }} />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, interests or vibes…"
-              className="input-serene pl-10"
-            />
-          </div>
-        </div>
+      <main className="pt-24 px-6 max-w-7xl mx-auto relative z-10">
+        <div className="space-y-6">
+          <h1 className="font-headline text-4xl font-bold tracking-tight text-on-surface animate-fade-in">Discover</h1>
 
-        {/* Filters */}
-        <div className="space-y-3 mb-8 animate-fade-in" style={{ animationDelay: '0.15s' }}>
-          {/* Branch */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--color-on-surface-variant)' }}>Branch</p>
-            <div className="flex flex-wrap gap-2">
-              <ChipButton active={!filterBranch} onClick={() => setFilterBranch('')}>All Branches</ChipButton>
-              {BRANCHES.slice(0, 8).map(b => (
-                <ChipButton key={b} active={filterBranch === b} onClick={() => setFilterBranch(filterBranch === b ? '' : b)}>
-                  {b.replace(' Engineering', '').replace(' & ', ' ')}
-                </ChipButton>
-              ))}
+          {/* Sticky Search Bar Container */}
+          <div className="sticky top-20 z-40 py-2 bg-background/80 backdrop-blur-md animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="relative group neon-glow-pink transition-all duration-300 rounded-full overflow-hidden border border-outline-variant/20 focus-within:shadow-[0_0_20px_rgba(233,30,140,0.3)]">
+              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-on-surface-variant">
+                <span className="material-symbols-outlined">search</span>
+              </div>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-surface-container-high py-4 pl-14 pr-6 rounded-full border-none focus:ring-0 text-on-surface placeholder-on-surface-variant/50 transition-all outline-none"
+                placeholder="Search by name, branch, or interest..."
+                type="text"
+              />
             </div>
           </div>
 
-          {/* Year */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--color-on-surface-variant)' }}>Year</p>
-            <div className="flex flex-wrap gap-2">
-              <ChipButton active={!filterYear} onClick={() => setFilterYear('')}>All Years</ChipButton>
-              {YEARS.map(y => (
-                <ChipButton key={y.value} active={filterYear === y.value} onClick={() => setFilterYear(filterYear === y.value ? '' : y.value)}>
-                  {y.value}
-                </ChipButton>
-              ))}
-            </div>
-          </div>
-
-          {/* Status */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--color-on-surface-variant)' }}>Status</p>
-            <div className="flex flex-wrap gap-2">
-              <ChipButton active={!filterStatus} onClick={() => setFilterStatus('')}>All</ChipButton>
-              {HOSTEL_STATUS.map(h => (
-                <ChipButton key={h.value} active={filterStatus === h.value} onClick={() => setFilterStatus(filterStatus === h.value ? '' : h.value)}>
-                  {h.label}
-                </ChipButton>
-              ))}
-            </div>
+          {/* Scrollable Filter Chips */}
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar py-2 -mx-6 px-6 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <ChipButton active={!filterYear && !filterStatus} onClick={() => { setFilterYear(''); setFilterStatus(''); }}>
+              All
+            </ChipButton>
+            {YEARS.map(y => (
+              <ChipButton key={y.value} active={filterYear === y.value} onClick={() => setFilterYear(filterYear === y.value ? '' : y.value)}>
+                {y.value}
+              </ChipButton>
+            ))}
+            {HOSTEL_STATUS.map(h => (
+              <ChipButton key={h.value} active={filterStatus === h.value} onClick={() => setFilterStatus(filterStatus === h.value ? '' : h.value)}>
+                {h.label}
+              </ChipButton>
+            ))}
           </div>
         </div>
 
         {/* Results */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="card p-5 flex flex-col items-center">
-                <div className="skeleton w-20 h-20 rounded-full mb-3" />
-                <div className="skeleton h-4 w-24 mb-2" />
-                <div className="skeleton h-3 w-32 mb-4" />
-                <div className="skeleton h-8 w-full rounded-lg" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-8">
+          {loading ? (
+            [1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="aspect-[3/4] rounded-2xl glass-card animate-pulse relative overflow-hidden">
+                <div className="absolute inset-0 h-[65%] bg-surface-container-high/50"></div>
+                <div className="absolute bottom-0 h-[35%] w-full p-4 flex flex-col justify-center gap-2">
+                  <div className="h-5 w-2/3 bg-surface-container-highest/50 rounded"></div>
+                  <div className="h-3 w-1/2 bg-surface-container-highest/50 rounded"></div>
+                </div>
               </div>
-            ))}
-          </div>
-        ) : users.length === 0 ? (
-          <div className="card p-8 text-center">
-            <p className="text-lg font-medium mb-2" style={{ color: 'var(--color-on-surface)' }}>No students found</p>
-            <p className="text-sm" style={{ color: 'var(--color-outline)' }}>Try adjusting your filters or search query</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {users.map(u => <UserCard key={u.id} user={u} />)}
-          </div>
-        )}
+            ))
+          ) : users.length === 0 ? (
+            <div className="col-span-full glass-card p-12 rounded-3xl text-center border border-outline-variant/10 shadow-2xl mt-8">
+              <span className="material-symbols-outlined text-6xl text-primary/30 mb-4 block">search_off</span>
+              <p className="text-xl font-headline font-bold mb-2 text-on-surface">No students found</p>
+              <p className="text-sm text-on-surface-variant leading-relaxed max-w-md mx-auto">
+                Try adjusting your filters or search query to find more matches.
+              </p>
+            </div>
+          ) : (
+            users.map((u, i) => (
+              <div key={u.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s` }}>
+                <UserCard user={u} />
+              </div>
+            ))
+          )}
+        </div>
       </main>
     </div>
   );

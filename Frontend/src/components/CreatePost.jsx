@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { compressImage, isValidImageType } from '../utils/imageCompression';
-import { containsProfanity, cleanText } from '../utils/profanityFilter';
+import { containsProfanity } from '../utils/profanityFilter';
 import { BUCKET_POSTS } from '../utils/constants';
 import toast from 'react-hot-toast';
-import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function CreatePost({ onPostCreated }) {
   const { profile } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -32,6 +32,13 @@ export default function CreatePost({ onPostCreated }) {
     setImagePreview(null);
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+    setContent('');
+    removeImage();
+    setIsAnonymous(false);
+  };
+
   const handleSubmit = async () => {
     const trimmed = content.trim();
     if (!trimmed && !image) {
@@ -49,7 +56,6 @@ export default function CreatePost({ onPostCreated }) {
     try {
       let imageUrl = null;
 
-      // Upload image if present
       if (image) {
         const compressed = await compressImage(image, 'post');
         const fileName = `${profile.id}/${Date.now()}-${compressed.name}`;
@@ -65,7 +71,6 @@ export default function CreatePost({ onPostCreated }) {
         imageUrl = publicUrl;
       }
 
-      // Insert post
       const { data, error } = await supabase
         .from('posts')
         .insert({
@@ -80,10 +85,8 @@ export default function CreatePost({ onPostCreated }) {
       if (error) throw error;
 
       toast.success('Post shared!');
-      setContent('');
-      removeImage();
-      setIsAnonymous(false);
       if (onPostCreated) onPostCreated(data);
+      closeModal();
     } catch (err) {
       console.error(err);
       toast.error('Failed to create post');
@@ -93,79 +96,97 @@ export default function CreatePost({ onPostCreated }) {
   };
 
   return (
-    <div className="card p-5 mb-6 animate-fade-in">
-      {/* Input area */}
-      <div className="flex gap-3">
-        <img
-          src={isAnonymous ? `https://ui-avatars.com/api/?name=?&background=d9e4ea&color=566166` : (profile?.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.full_name || 'U')}&background=82c6f1&color=003f5a`)}
-          alt=""
-          className="avatar mt-1"
-        />
-        <div className="flex-1">
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="What's on your mind?"
-            rows={3}
-            className="input-serene resize-none"
-            style={{ minHeight: '80px' }}
-          />
-        </div>
-      </div>
+    <>
+      {/* Floating Action Button */}
+      <button 
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-28 right-6 w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(233,30,140,0.4)] z-[60] active:scale-90 transition-transform group cursor-pointer border-none"
+      >
+        <span className="material-symbols-outlined text-3xl transition-transform group-hover:rotate-90">add</span>
+        {/* Pulse effect */}
+        <div className="absolute inset-0 rounded-full bg-primary/40 animate-ping"></div>
+      </button>
 
-      {/* Image preview */}
-      {imagePreview && (
-        <div className="relative mt-3 rounded-xl overflow-hidden" style={{ maxHeight: '300px' }}>
-          <img src={imagePreview} alt="Preview" className="w-full object-cover rounded-xl" style={{ maxHeight: '300px' }} />
-          <button
-            onClick={removeImage}
-            className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', cursor: 'pointer' }}
-          >
-            <XMarkIcon className="w-5 h-5" />
-          </button>
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="glass-card border border-outline-variant/10 rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-lg shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-fade-in-up">
+            
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-headline text-2xl font-bold text-on-surface">New Vibe</h3>
+              <button onClick={closeModal} className="text-outline hover:text-on-surface transition-colors cursor-pointer bg-surface-container-high rounded-full w-8 h-8 flex items-center justify-center border-none">
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+
+            {/* Input area */}
+            <div className="flex gap-4 mb-4">
+              <img
+                src={isAnonymous ? `https://ui-avatars.com/api/?name=?&background=d9e4ea&color=566166` : (profile?.profile_photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.full_name || 'U')}&background=82c6f1&color=003f5a`)}
+                alt=""
+                className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
+              />
+              <div className="flex-1">
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="What's your campus vibe right now?"
+                  rows={4}
+                  className="w-full bg-transparent border-none text-on-surface placeholder:text-outline/40 focus:ring-0 resize-none outline-none text-lg leading-relaxed"
+                />
+              </div>
+            </div>
+
+            {/* Image preview */}
+            {imagePreview && (
+              <div className="relative mt-2 mb-4 rounded-2xl overflow-hidden bg-surface-container-low max-h-[300px]">
+                <img src={imagePreview} alt="Preview" className="w-full object-cover" />
+                <button
+                  onClick={removeImage}
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/50 text-white hover:bg-black/80 transition-colors cursor-pointer border-none"
+                >
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              </div>
+            )}
+
+            {/* Actions row */}
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-outline-variant/10">
+              <div className="flex items-center gap-6">
+                {/* Image upload */}
+                <label className="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors bg-surface-container-high hover:bg-primary/20 text-primary">
+                  <span className="material-symbols-outlined">add_photo_alternate</span>
+                  <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                </label>
+
+                {/* Anonymous toggle */}
+                <label className="flex items-center gap-3 cursor-pointer text-sm font-bold text-on-surface-variant uppercase tracking-widest">
+                  <div
+                    className="relative w-12 h-6 rounded-full transition-colors"
+                    style={{ background: isAnonymous ? 'var(--color-primary)' : 'var(--color-surface-container-highest)' }}
+                  >
+                    <div
+                      className="absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-md"
+                      style={{ transform: isAnonymous ? 'translateX(26px)' : 'translateX(4px)' }}
+                    />
+                  </div>
+                  Anon
+                </label>
+              </div>
+
+              <button 
+                onClick={handleSubmit} 
+                disabled={submitting || (!content.trim() && !image)} 
+                className="glow-md bg-gradient-to-br from-primary to-primary-container text-white font-bold tracking-widest px-8 py-3 rounded-full hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2 cursor-pointer border-none"
+              >
+                {submitting ? 'SENDING...' : 'POST'}
+                <span className="material-symbols-outlined text-sm">send</span>
+              </button>
+            </div>
+            
+          </div>
         </div>
       )}
-
-      {/* Actions row */}
-      <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: '1px solid rgba(169,180,185,0.12)' }}>
-        <div className="flex items-center gap-4">
-          {/* Image upload */}
-          <label className="flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg transition-colors hover:bg-[var(--color-surface-container-low)]"
-                 style={{ color: 'var(--color-primary)', fontSize: '0.85rem', fontWeight: 500 }}>
-            <PhotoIcon className="w-5 h-5" />
-            Photo
-            <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-          </label>
-
-          {/* Anonymous toggle */}
-          <label className="flex items-center gap-2 cursor-pointer text-sm" style={{ color: 'var(--color-on-surface-variant)' }}>
-            <div
-              className="relative w-10 h-5.5 rounded-full transition-colors cursor-pointer"
-              style={{
-                background: isAnonymous ? 'var(--color-primary)' : 'var(--color-surface-container-highest)',
-                width: '40px', height: '22px',
-              }}
-              onClick={() => setIsAnonymous(!isAnonymous)}
-            >
-              <div
-                className="absolute top-0.5 w-4.5 h-4.5 rounded-full transition-transform bg-white"
-                style={{
-                  width: '18px', height: '18px', top: '2px',
-                  transform: isAnonymous ? 'translateX(20px)' : 'translateX(2px)',
-                  transition: 'transform 0.25s var(--ease-serene)',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-                }}
-              />
-            </div>
-            Anonymous
-          </label>
-        </div>
-
-        <button onClick={handleSubmit} disabled={submitting || (!content.trim() && !image)} className="btn-primary text-sm px-5 py-2">
-          {submitting ? 'Posting…' : 'Post'}
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

@@ -19,9 +19,9 @@ function AuthRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--color-surface)' }}>
+      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--color-background)' }}>
         <div className="w-10 h-10 rounded-full border-3 border-t-transparent animate-spin"
-             style={{ borderColor: 'var(--color-primary-container)', borderTopColor: 'transparent', borderWidth: '3px' }} />
+             style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent', borderWidth: '3px' }} />
       </div>
     );
   }
@@ -39,9 +39,9 @@ function ProfileGuard({ children }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--color-surface)' }}>
+      <div className="flex items-center justify-center min-h-screen" style={{ background: 'var(--color-background)' }}>
         <div className="w-10 h-10 rounded-full border-3 border-t-transparent animate-spin"
-             style={{ borderColor: 'var(--color-primary-container)', borderTopColor: 'transparent', borderWidth: '3px' }} />
+             style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent', borderWidth: '3px' }} />
       </div>
     );
   }
@@ -61,12 +61,12 @@ export default function App() {
           toastOptions={{
             duration: 3000,
             style: {
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: '0.9rem',
               background: 'var(--color-surface-container-lowest)',
               color: 'var(--color-on-surface)',
               borderRadius: '0.75rem',
-              boxShadow: 'var(--shadow-ambient)',
+              boxShadow: '0 0 24px rgba(233,30,140,0.3)',
             },
           }}
         />

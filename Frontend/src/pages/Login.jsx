@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { supabase, isMissingCredentials } from '../lib/supabase';
 import { APP_NAME, COLLEGE_NAME, EMAIL_DOMAIN } from '../utils/constants';
 import toast from 'react-hot-toast';
-import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -54,114 +53,164 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--color-surface)' }}>
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-4"
-               style={{ background: 'var(--gradient-primary)' }}>V</div>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-on-surface)' }}>{APP_NAME}</h1>
-          <p className="text-sm" style={{ color: 'var(--color-outline)' }}>A Digital Sanctuary for {COLLEGE_NAME}</p>
-        </div>
+    <div className="bg-surface-container-lowest min-h-screen text-on-surface overflow-hidden relative selection:bg-primary-container selection:text-white">
+      {/* Atmospheric Background Elements */}
+      <div className="blob-pink -top-20 -left-20"></div>
+      <div className="blob-purple bottom-0 right-0"></div>
 
-        {/* Missing credentials banner */}
-        {isMissingCredentials && (
-          <div className="card p-4 mb-4 animate-fade-in flex items-start gap-3" style={{ background: 'rgba(168,56,54,0.06)', animationDelay: '0.05s' }}>
-            <ExclamationTriangleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-error)' }} />
-            <div>
-              <p className="text-sm font-medium mb-1" style={{ color: 'var(--color-error)' }}>Supabase not connected</p>
-              <p className="text-xs" style={{ color: 'var(--color-on-surface-variant)' }}>
-                Create a <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--color-surface-container)' }}>.env</code> file in <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--color-surface-container)' }}>Frontend/</code> with:<br />
-                <code className="text-xs" style={{ color: 'var(--color-primary)' }}>VITE_SUPABASE_URL=https://xxx.supabase.co</code><br />
-                <code className="text-xs" style={{ color: 'var(--color-primary)' }}>VITE_SUPABASE_ANON_KEY=your-key</code>
+      <main className="relative z-10 min-h-screen flex items-center justify-center px-6">
+        <div className="w-full max-w-lg">
+          
+          {/* Missing credentials banner */}
+          {isMissingCredentials && (
+            <div className="glass-card p-4 mb-6 flex items-start gap-3 bg-error/10 border-error/20">
+              <span className="material-symbols-outlined flex-shrink-0 mt-0.5 text-error">warning</span>
+              <div>
+                <p className="text-sm font-medium mb-1 text-error">Supabase not connected</p>
+                <p className="text-xs text-on-surface-variant">
+                  Create a <code className="px-1 py-0.5 rounded text-xs bg-surface-container">.env</code> file in <code className="px-1 py-0.5 rounded text-xs bg-surface-container">Frontend/</code> with:<br />
+                  <code className="text-xs text-primary">VITE_SUPABASE_URL=https://xxx.supabase.co</code><br />
+                  <code className="text-xs text-primary">VITE_SUPABASE_ANON_KEY=your-key</code>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Glassmorphism Card */}
+          <div className="glass-card p-10 md:p-14 rounded-3xl border border-outline-variant/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] animate-fade-in-up">
+            
+            {/* Branding Header */}
+            <header className="text-center mb-10">
+              <h1 className="text-5xl md:text-6xl font-bold italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-primary to-primary-container mb-3 font-headline">
+                {APP_NAME}
+              </h1>
+              <p className="font-headline italic text-on-surface-variant text-lg tracking-wide">
+                Your campus. Your people. Your vibe.
               </p>
+            </header>
+
+            {/* Auth Mode Switcher */}
+            <nav className="flex justify-center mb-12 relative">
+              <div className="flex gap-10">
+                <button className="relative pb-2 text-primary font-semibold tracking-wider">
+                  {resetMode ? 'Reset Password' : 'Login'}
+                  <span className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary to-primary-container rounded-full"></span>
+                </button>
+                {!resetMode && (
+                  <Link to="/signup" className="pb-2 text-on-surface/50 font-medium tracking-wider hover:text-on-surface transition-colors">
+                    Sign Up
+                  </Link>
+                )}
+              </div>
+            </nav>
+
+            {/* Form Section */}
+            <form className="space-y-8" onSubmit={resetMode ? handleResetPassword : handleLogin}>
+              <div className="space-y-6">
+                
+                {/* Email Input */}
+                <div className="group relative">
+                  <label className="block text-xs font-bold uppercase tracking-[0.2em] text-primary/80 mb-2 ml-1">University Email</label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 group-focus-within:text-primary transition-colors">mail</span>
+                    <input 
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-surface-container-low/50 border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-high transition-all outline-none" 
+                      placeholder={`yourname${EMAIL_DOMAIN}`} 
+                    />
+                  </div>
+                </div>
+
+                {/* Password Input */}
+                {!resetMode && (
+                  <div className="group relative">
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="block text-xs font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Password</label>
+                      <button 
+                        type="button" 
+                        onClick={() => setResetMode(true)}
+                        className="text-[10px] uppercase font-bold text-outline hover:text-primary transition-colors">
+                        Forgot?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 group-focus-within:text-primary transition-colors">lock</span>
+                      <input 
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full bg-surface-container-low/50 border-none rounded-xl py-4 pl-12 pr-12 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-high transition-all outline-none" 
+                        placeholder="••••••••" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline/60 hover:text-on-surface transition-colors">
+                        <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* CTA Button */}
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full glow-md bg-gradient-to-br from-primary to-primary-container py-4 rounded-full text-on-primary font-bold text-lg tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-3 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer">
+                {loading ? 'WAITING...' : (resetMode ? 'SEND LINK' : 'ENTER CAMPUS')}
+                <span className="material-symbols-outlined">arrow_right_alt</span>
+              </button>
+
+              {resetMode && (
+                <button 
+                  type="button" 
+                  onClick={() => setResetMode(false)}
+                  className="w-full text-center text-sm text-outline hover:text-primary transition-colors mt-4">
+                  ← Back to login
+                </button>
+              )}
+            </form>
+
+            {/* Footer Restriction Note */}
+            {!resetMode && (
+              <footer className="mt-10 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-tertiary/10 border border-tertiary/20">
+                  <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                  <span className="text-xs font-semibold text-tertiary tracking-wide">
+                    Only {EMAIL_DOMAIN} emails allowed.
+                  </span>
+                </div>
+              </footer>
+            )}
+          </div>
+
+          {/* Social/Secondary Proof */}
+          <div className="mt-12 flex justify-center gap-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">shield_person</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Verified</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">security</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Encrypted</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface">school</span>
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Exclusive</span>
             </div>
           </div>
-        )}
-
-        {/* Card */}
-        <div className="card p-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <h2 className="text-lg font-semibold mb-6" style={{ color: 'var(--color-on-surface)' }}>
-            {resetMode ? 'Reset Password' : 'Welcome Back'}
-          </h2>
-
-          <form onSubmit={resetMode ? handleResetPassword : handleLogin} className="space-y-4">
-            {/* Email */}
-            <div>
-              <label className="block text-xs font-medium mb-1.5 uppercase tracking-wider"
-                     style={{ color: 'var(--color-on-surface-variant)' }}>
-                Institutional Email
-              </label>
-              <div className="relative">
-                <EnvelopeIcon className="w-4.5 h-4.5 absolute left-3 top-1/2 -translate-y-1/2"
-                              style={{ color: 'var(--color-outline)', width: '18px', height: '18px' }} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={`name${EMAIL_DOMAIN}`}
-                  className="input-serene pl-10"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            {!resetMode && (
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-medium uppercase tracking-wider"
-                         style={{ color: 'var(--color-on-surface-variant)' }}>
-                    Password
-                  </label>
-                  <button type="button" onClick={() => setResetMode(true)}
-                          className="text-xs font-medium"
-                          style={{ color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }}>
-                    Forgot password?
-                  </button>
-                </div>
-                <div className="relative">
-                  <LockClosedIcon className="w-4.5 h-4.5 absolute left-3 top-1/2 -translate-y-1/2"
-                                  style={{ color: 'var(--color-outline)', width: '18px', height: '18px' }} />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="input-serene pl-10 pr-10"
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2"
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-outline)' }}>
-                    {showPassword
-                      ? <EyeSlashIcon style={{ width: '18px', height: '18px' }} />
-                      : <EyeIcon style={{ width: '18px', height: '18px' }} />}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3">
-              {loading ? 'Please wait…' : resetMode ? 'Send Reset Link' : 'Sign In →'}
-            </button>
-          </form>
-
-          {resetMode && (
-            <button onClick={() => setResetMode(false)}
-                    className="mt-3 text-sm w-full text-center"
-                    style={{ color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }}>
-              ← Back to login
-            </button>
-          )}
+          
         </div>
-
-        {/* Footer */}
-        <p className="text-center mt-6 text-sm animate-fade-in" style={{ color: 'var(--color-outline)', animationDelay: '0.2s' }}>
-          New to the commons?{' '}
-          <Link to="/signup" className="font-semibold no-underline" style={{ color: 'var(--color-primary)' }}>
-            Join Now
-          </Link>
-        </p>
-      </div>
+      </main>
     </div>
   );
 }

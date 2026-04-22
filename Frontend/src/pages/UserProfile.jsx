@@ -26,7 +26,6 @@ export default function UserProfile() {
   useEffect(() => {
     if (!userId || !profile) return;
 
-    // Redirect if viewing own profile
     if (userId === profile.id) {
       navigate('/profile');
       return;
@@ -35,7 +34,6 @@ export default function UserProfile() {
     async function fetchData() {
       setLoading(true);
 
-      // Fetch user
       const { data: userData } = await supabase
         .from('users')
         .select('*')
@@ -43,7 +41,6 @@ export default function UserProfile() {
         .single();
       setUser(userData);
 
-      // Check block status
       const { data: blockData } = await supabase
         .from('blocked_users')
         .select('id')
@@ -52,10 +49,9 @@ export default function UserProfile() {
         .limit(1);
       setIsBlocked(blockData && blockData.length > 0);
 
-      // Fetch their non-anonymous posts
       const { data: postsData } = await supabase
         .from('posts')
-        .select('*, author:users(full_name, profile_photo_url)')
+        .select('*, author:users(full_name, profile_photo_url, branch)')
         .eq('user_id', userId)
         .eq('is_anonymous', false)
         .order('created_at', { ascending: false });
@@ -71,7 +67,42 @@ export default function UserProfile() {
     }
 
     fetchData();
-  }, [userId, profile]);
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel(`public:posts:user=${userId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'posts', filter: `user_id=eq.${userId}` },
+        (payload) => {
+          if (payload.eventType === 'INSERT' && !payload.new.is_anonymous) {
+            (async () => {
+              const { data: newPost } = await supabase
+                .from('posts')
+                .select('*, author:users(full_name, profile_photo_url, branch)')
+                .eq('id', payload.new.id)
+                .single();
+              
+              if (newPost) {
+                setPosts(prev => {
+                  if (prev.some(p => p.id === newPost.id)) return prev;
+                  return [{ ...newPost, user_liked: false }, ...prev];
+                });
+              }
+            })();
+          } else if (payload.eventType === 'DELETE') {
+            setPosts(prev => prev.filter(p => p.id !== payload.old.id));
+          } else if (payload.eventType === 'UPDATE') {
+            setPosts(prev => prev.map(p => 
+              p.id === payload.new.id ? { ...p, ...payload.new } : p
+            ));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
+  }, [userId, profile, navigate]);
 
   const handleBlock = async () => {
     if (isBlocked) {
@@ -107,17 +138,13 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
+      <div className="bg-background min-h-screen pb-32">
         <Navbar />
-        <main className="max-w-2xl mx-auto px-4 py-6">
-          <div className="card p-6">
-            <div className="flex items-center gap-5">
-              <div className="skeleton w-24 h-24 rounded-full" />
-              <div className="flex-1">
-                <div className="skeleton h-6 w-40 mb-3" />
-                <div className="skeleton h-4 w-60" />
-              </div>
-            </div>
+        <main className="pt-24 px-6 max-w-2xl mx-auto">
+          <div className="glass-card p-6 rounded-3xl flex flex-col items-center animate-fade-in-up">
+            <div className="w-24 h-24 rounded-full mb-4 bg-surface-container-high/50 animate-pulse" />
+            <div className="h-6 w-40 mb-3 bg-surface-container-high/50 rounded animate-pulse" />
+            <div className="h-4 w-60 bg-surface-container-high/50 rounded animate-pulse" />
           </div>
         </main>
       </div>
@@ -126,11 +153,12 @@ export default function UserProfile() {
 
   if (!user) {
     return (
-      <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
+      <div className="bg-background min-h-screen pb-32">
         <Navbar />
-        <main className="max-w-2xl mx-auto px-4 py-6">
-          <div className="card p-8 text-center">
-            <p className="text-lg font-medium" style={{ color: 'var(--color-on-surface)' }}>User not found</p>
+        <main className="pt-24 px-6 max-w-2xl mx-auto">
+          <div className="glass-card p-12 text-center rounded-3xl animate-fade-in-up">
+            <span className="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4 block">person_off</span>
+            <p className="text-xl font-headline font-bold text-on-surface">User not found</p>
           </div>
         </main>
       </div>
@@ -141,75 +169,99 @@ export default function UserProfile() {
     || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=82c6f1&color=003f5a&size=200`;
 
   return (
-    <div style={{ background: 'var(--color-surface)', minHeight: '100vh' }}>
+    <div className="bg-background min-h-screen pb-32 relative">
+      {/* Ambient Glow Effects */}
+      <div className="fixed top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+      
       <Navbar />
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24 md:pb-6">
-        <div className="card p-6 mb-6 animate-fade-in">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            <img src={avatar} alt={user.full_name} className="w-24 h-24 rounded-full object-cover"
-                 style={{ border: '3px solid var(--color-primary-container)' }} />
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--color-on-surface)' }}>{user.full_name}</h1>
-              {user.bio && (
-                <p className="text-sm mb-3" style={{ color: 'var(--color-on-surface-variant)' }}>{user.bio}</p>
-              )}
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-4">
-                <span className="chip">{user.branch}</span>
-                <span className="chip">{user.year}</span>
-                <span className="chip">Div {user.division}</span>
-                <span className="chip">{user.hostel_or_day}</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <Link
-                  to={`/messages?user=${user.id}`}
-                  className="btn-primary flex items-center gap-1.5 no-underline text-sm py-2 px-4"
-                >
-                  <ChatBubbleLeftRightIcon className="w-4 h-4" /> Message
-                </Link>
-                <button onClick={handleBlock} className="btn-secondary flex items-center gap-1.5 text-sm">
-                  <NoSymbolIcon className="w-4 h-4" /> {isBlocked ? 'Unblock' : 'Block'}
-                </button>
-                <button onClick={() => setShowReport(true)} className="btn-secondary flex items-center gap-1.5 text-sm">
-                  <FlagIcon className="w-4 h-4" /> Report
-                </button>
-              </div>
+      
+      <main className="pt-16 max-w-3xl mx-auto pb-24 relative z-10">
+        {/* Profile Banner Section */}
+        <section className="relative animate-fade-in">
+          <div className="h-[130px] w-full bg-gradient-to-r from-primary-container to-secondary-container opacity-80"></div>
+          
+          {/* Profile Info Container */}
+          <div className="px-6 flex flex-col items-center -mt-12 mb-8 relative z-10">
+            <div className="w-[84px] h-[84px] rounded-full ring-4 ring-background shadow-xl overflow-hidden mb-4 bg-surface-container">
+              <img src={avatar} alt={user.full_name} className="w-full h-full object-cover" />
             </div>
+            <h1 className="font-headline font-bold text-[22px] text-on-surface tracking-tight mb-2">{user.full_name}</h1>
+            
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              {user.branch && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{user.branch}</span>}
+              {user.year && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{user.year}</span>}
+              {user.hostel_or_day && <span className="bg-surface-container-highest px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary border border-outline-variant/10">{user.hostel_or_day}</span>}
+            </div>
+            
+            {user.bio && (
+              <p className="text-center italic text-on-surface-variant font-body leading-relaxed max-w-xs mb-6 opacity-80">
+                "{user.bio}"
+              </p>
+            )}
+            
+            <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+              <Link to={`/messages?user=${user.id}`} className="flex-1 text-center py-3 rounded-full border-2 border-primary text-primary font-bold tracking-wide hover:bg-primary/10 transition-all active:scale-95 duration-200 flex justify-center items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">chat_bubble</span>
+                Message
+              </Link>
+              <button onClick={handleBlock} className="flex-1 py-3 rounded-full border-2 border-outline-variant text-on-surface-variant font-bold tracking-wide hover:bg-surface-container-highest transition-all active:scale-95 duration-200 flex justify-center items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">{isBlocked ? 'check_circle' : 'block'}</span>
+                {isBlocked ? 'Unblock' : 'Block'}
+              </button>
+            </div>
+            <button onClick={() => setShowReport(true)} className="mt-4 text-xs font-bold uppercase tracking-widest text-error/80 hover:text-error flex items-center gap-1 transition-colors">
+              <span className="material-symbols-outlined text-[14px]">flag</span> Report User
+            </button>
           </div>
-        </div>
-
-        {/* Posts */}
-        <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-on-surface)' }}>
-          Posts by {user.full_name}
-        </h2>
-        {posts.length === 0 ? (
-          <div className="card p-8 text-center">
-            <p className="text-sm" style={{ color: 'var(--color-outline)' }}>No public posts yet</p>
+        </section>
+        
+        {/* Divider */}
+        <div className="h-8 bg-gradient-to-b from-surface-container-low/30 to-transparent mb-8"></div>
+        
+        {/* Posts Section */}
+        <section className="px-6 space-y-6">
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="font-headline text-2xl font-bold text-on-surface tracking-tight">Posts by {user.full_name.split(' ')[0]}</h2>
+            <div className="h-1 w-12 bg-primary rounded-full"></div>
           </div>
-        ) : (
-          posts.map(p => <PostCard key={p.id} post={p} />)
-        )}
+          
+          <div className="flex flex-col gap-6">
+            {posts.length === 0 ? (
+              <div className="glass-card p-12 text-center rounded-3xl border border-outline-variant/10 animate-fade-in-up">
+                <p className="text-sm text-on-surface-variant font-medium">No public posts yet.</p>
+              </div>
+            ) : (
+              posts.map((p, i) => (
+                <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <PostCard post={p} />
+                </div>
+              ))
+            )}
+          </div>
+        </section>
 
         {/* Report modal */}
         {showReport && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.3)' }}>
-            <div className="card p-6 w-full max-w-md animate-fade-in">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold" style={{ color: 'var(--color-on-surface)' }}>Report User</h3>
-                <button onClick={() => setShowReport(false)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-outline)' }}>
-                  <XMarkIcon className="w-5 h-5" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <div className="glass-card p-6 w-full max-w-md animate-fade-in rounded-3xl border border-error/20 shadow-[0_0_40px_rgba(255,180,171,0.1)]">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-error">flag</span>
+                  <h3 className="font-headline font-bold text-xl text-on-surface">Report User</h3>
+                </div>
+                <button onClick={() => setShowReport(false)} className="text-on-surface-variant hover:text-on-surface transition-colors">
+                  <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
               <textarea
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value)}
                 placeholder="Why are you reporting this user?"
-                className="input-serene resize-none mb-4"
-                rows={3}
+                className="w-full bg-surface-container-high py-3 px-4 rounded-xl border-none focus:ring-1 focus:ring-error text-on-surface placeholder-on-surface-variant/50 transition-all outline-none resize-none mb-6 min-h-[100px]"
               />
-              <div className="flex gap-2 justify-end">
-                <button onClick={() => setShowReport(false)} className="btn-secondary">Cancel</button>
-                <button onClick={submitReport} className="btn-danger">Submit Report</button>
+              <div className="flex gap-3 justify-end w-full">
+                <button onClick={() => setShowReport(false)} className="px-6 py-2 rounded-full font-bold text-sm bg-surface-container-highest text-on-surface hover:bg-surface-bright transition-colors">Cancel</button>
+                <button onClick={submitReport} className="px-6 py-2 rounded-full font-bold text-sm bg-error text-on-error hover:bg-error/90 transition-colors shadow-[0_0_15px_rgba(255,180,171,0.3)]">Submit Report</button>
               </div>
             </div>
           </div>
