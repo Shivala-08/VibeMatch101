@@ -1,34 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #E91E8C;
-  --color-primary-dark: #C2185B;
-  --color-secondary: #7B1FA2;
-  --color-background: #0D0D1A;
-  
-  --color-surface-container-lowest: #0d0d1a;
-  --color-surface-container-low: #1a1a28;
-  --color-surface-container-high: #292937;
-  --color-surface-container-highest: #343342;
-  --color-surface-variant: #343342;
-  
-  --color-primary-container: #ff46a0;
-  --color-on-primary: #640038;
-  --color-outline: #a88892;
-  --color-outline-variant: #594048;
+  --color-on-tertiary-fixed-variant: #7000a8;
+  --color-secondary: #c8bfff;
+  --color-outline: #ac878f;
+  --color-secondary-fixed: #e5deff;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+  --color-on-secondary-fixed: #190064;
+  --color-surface-dim: #131318;
+  --color-on-secondary: #2c009e;
+  --color-inverse-surface: #e4e1e9;
+  --color-inverse-primary: #bb0058;
+  --color-tertiary-fixed-dim: #e5b5ff;
+  --color-secondary-container: #4e08ff;
+  --color-on-secondary-container: #cbc3ff;
+  --color-inverse-on-surface: #303036;
+  --color-error: #ffb4ab;
+  --color-surface-container-high: #2a292f;
+  --color-tertiary: #e5b5ff;
+  --color-on-primary-fixed: #3f0019;
+  --color-on-primary-fixed-variant: #8f0041;
+  --color-primary-fixed-dim: #ffb1c3;
+  --color-surface-container-highest: #35343a;
+  --color-on-tertiary-container: #450069;
+  --color-on-tertiary: #4e0078;
+  --color-primary-fixed: #ffd9e0;
+  --color-surface-container-low: #1b1b20;
+  --color-primary: #ffb1c3;
+  --color-on-primary-container: #590026;
+  --color-surface-tint: #ffb1c3;
+  --color-primary-container: #ff4b89;
+  --color-surface-variant: #35343a;
+  --color-surface: #131318;
+  --color-surface-container: #1f1f25;
+  --color-on-tertiary-fixed: #30004b;
+  --color-on-error: #690005;
+  --color-on-surface-variant: #e5bcc4;
+  --color-tertiary-container: #c365ff;
+  --color-outline-variant: #5c3f45;
+  --color-tertiary-fixed: #f4d9ff;
+  --color-surface-container-lowest: #0e0e13;
+  --color-on-primary: #66002c;
+  --color-surface-bright: #39383e;
+  --color-on-surface: #e4e1e9;
+  --color-secondary-fixed-dim: #c8bfff;
+  --color-background: #131318;
+  --color-on-background: #e4e1e9;
+  --color-on-secondary-fixed-variant: #4100db;
 
-  --color-primary-gradient-start: #ffb0cc;
-  --color-primary-gradient-end: #ff46a0;
-  
-  --color-tertiary: #69df54;
-  --color-on-surface: #F5F5F5;
-  --color-on-surface-variant: #9E9E9E;
-  
-  --font-sans: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
-  --font-serif: 'Noto Serif', 'DM Serif Display', serif;
-  --font-body: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
-  --font-headline: 'Noto Serif', 'DM Serif Display', serif;
+  --font-body-md: 'Manrope', sans-serif;
+  --font-label-caps: 'Space Grotesk', sans-serif;
+  --font-display-xl: 'Newsreader', serif;
+  --font-body-lg: 'Manrope', sans-serif;
+  --font-headline-md: 'Newsreader', serif;
+  --font-headline-lg: 'Newsreader', serif;
 
   --animate-blob-drift: blob-drift 20s infinite alternate linear;
   --animate-fade-in-up: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -41,36 +69,53 @@
 body {
   background-color: var(--color-background);
   color: var(--color-on-surface);
-  font-family: var(--font-body);
-  background-image: linear-gradient(135deg, #0D0D1A 0%, #1a0530 50%, #0D0D1A 100%);
+  font-family: var(--font-body-md);
+  background-image: linear-gradient(135deg, #131318 0%, #1a0530 50%, #131318 100%);
   background-attachment: fixed;
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6, .font-headline {
-  font-family: var(--font-headline);
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline-lg);
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism Classes */
+.glass-noise {
+    position: relative;
+}
+.glass-noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+.organic-blob {
+    filter: blur(80px);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+.custom-cubic {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Legacy Utilities to prevent breaking existing components before full migration */
 .glass-card {
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
 }
 
-/* Gradient text */
 .text-gradient {
-  background: linear-gradient(to bottom right, var(--color-primary-gradient-start), var(--color-primary-gradient-end));
+  background: linear-gradient(to bottom right, var(--color-primary), var(--color-primary-container));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Primary buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary-gradient-start) 0%, var(--color-primary-gradient-end) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
   color: #580030;
   border: none;
   border-radius: 9999px;
@@ -82,48 +127,13 @@ h1, h2, h3, h4, h5, h6, .font-headline {
 
 .btn-primary:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 24px rgba(233,30,140,0.3);
+  box-shadow: 0 0 24px rgba(255, 177, 195, 0.3);
 }
 
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Bottom Nav Frosted Glass */
 .frosted-nav {
   background: rgba(13, 13, 26, 0.6);
   backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Ambient Blobs */
-.blob-pink {
-  background: radial-gradient(circle, rgba(233,30,140,0.15) 0%, rgba(233,30,140,0) 70%);
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  filter: blur(80px);
-  position: fixed;
-  z-index: -1;
-  pointer-events: none;
-  animation: var(--animate-blob-drift);
-}
-
-.blob-purple {
-  background: radial-gradient(circle, rgba(123,31,162,0.15) 0%, rgba(123,31,162,0) 70%);
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  filter: blur(80px);
-  position: fixed;
-  z-index: -1;
-  pointer-events: none;
-  animation: var(--animate-blob-drift);
-  animation-delay: -10s;
 }
 
 /* Animations */
@@ -143,28 +153,10 @@ h1, h2, h3, h4, h5, h6, .font-headline {
   animation: var(--animate-fade-in-up);
 }
 
-/* Utility to override standard shadows with glows */
-.glow-sm { box-shadow: 0 0 12px rgba(233,30,140,0.15); }
-.glow-md { box-shadow: 0 0 24px rgba(233,30,140,0.3); }
-.glow-lg { box-shadow: 0 0 36px rgba(233,30,140,0.4); }
-
-/* Inputs */
-.input-glass {
-  width: 100%;
-  padding: 1rem;
-  background: rgba(26, 26, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0.75rem;
-  color: var(--color-on-surface);
-  outline: none;
-  transition: all 200ms ease;
-}
-
-.input-glass:focus {
-  border-color: rgba(233,30,140,0.4);
-  box-shadow: 0 0 0 2px rgba(233,30,140,0.1);
-  background: rgba(26, 26, 40, 0.8);
-}
+/* Utility glow */
+.glow-sm { box-shadow: 0 0 12px rgba(255, 177, 195, 0.15); }
+.glow-md { box-shadow: 0 0 24px rgba(255, 177, 195, 0.3); }
+.glow-lg { box-shadow: 0 0 36px rgba(255, 177, 195, 0.4); }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

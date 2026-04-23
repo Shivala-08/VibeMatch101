@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-noise {
+            position: relative;
+        }
+        .glass-noise::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        .custom-bezier {
+            transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(255, 75, 137, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#7000a8",
+                    "secondary": "#c8bfff",
+                    "outline": "#ac878f",
+                    "secondary-fixed": "#e5deff",
+                    "error-container": "#93000a",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-fixed": "#190064",
+                    "surface-dim": "#131318",
+                    "on-secondary": "#2c009e",
+                    "inverse-surface": "#e4e1e9",
+                    "inverse-primary": "#bb0058",
+                    "tertiary-fixed-dim": "#e5b5ff",
+                    "secondary-container": "#4e08ff",
+                    "on-secondary-container": "#cbc3ff",
+                    "inverse-on-surface": "#303036",
+                    "error": "#ffb4ab",
+                    "surface-container-high": "#2a292f",
+                    "tertiary": "#e5b5ff",
+                    "on-primary-fixed": "#3f0019",
+                    "on-primary-fixed-variant": "#8f0041",
+                    "primary-fixed-dim": "#ffb1c3",
+                    "surface-container-highest": "#35343a",
+                    "on-tertiary-container": "#450069",
+                    "on-tertiary": "#4e0078",
+                    "primary-fixed": "#ffd9e0",
+                    "surface-container-low": "#1b1b20",
+                    "primary": "#ffb1c3",
+                    "on-primary-container": "#590026",
+                    "surface-tint": "#ffb1c3",
+                    "primary-container": "#ff4b89",
+                    "surface-variant": "#35343a",
+                    "surface": "#131318",
+                    "surface-container": "#1f1f25",
+                    "on-tertiary-fixed": "#30004b",
+                    "on-error": "#690005",
+                    "on-surface-variant": "#e5bcc4",
+                    "tertiary-container": "#c365ff",
+                    "outline-variant": "#5c3f45",
+                    "tertiary-fixed": "#f4d9ff",
+                    "surface-container-lowest": "#0e0e13",
+                    "on-primary": "#66002c",
+                    "surface-bright": "#39383e",
+                    "on-surface": "#e4e1e9",
+                    "secondary-fixed-dim": "#c8bfff",
+                    "background": "#131318",
+                    "on-background": "#e4e1e9",
+                    "on-secondary-fixed-variant": "#4100db"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "0.5rem",
+                    "offset-left": "12.5%",
+                    "xl": "8rem",
+                    "sm": "1rem",
+                    "md": "2rem",
+                    "lg": "4rem",
+                    "unit": "4px",
+                    "offset-right": "5%"
+            },
+            "fontFamily": {
+                    "body-md": ["Manrope"],
+                    "label-caps": ["Space Grotesk"],
+                    "display-xl": ["Newsreader"],
+                    "body-lg": ["Manrope"],
+                    "headline-md": ["Newsreader"],
+                    "headline-lg": ["Newsreader"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "160%", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "100%", "letterSpacing": "0.2em", "fontWeight": "600"}],
+                    "display-xl": ["84px", {"lineHeight": "90%", "letterSpacing": "-0.04em", "fontWeight": "300"}],
+                    "body-lg": ["18px", {"lineHeight": "160%", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "120%", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-lg": ["48px", {"lineHeight": "110%", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-container selection:text-white overflow-x-hidden">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 right-0 z-[100] bg-zinc-950/40 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] glass-noise">
+<div class="flex justify-between items-center w-full px-12 h-24 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-3xl font-black italic tracking-tighter text-zinc-100 ml-[-8%] drop-shadow-[0_2px_10px_rgba(255,0,122,0.3)]">CampusMatch</span>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-zinc-400 font-light hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95" href="#">Discover</a>
+<a class="text-zinc-400 font-light hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95" href="#">Match</a>
+<a class="text-zinc-400 font-light hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95" href="#">Pulse</a>
+<a class="text-pink-500 font-bold border-b-2 border-pink-500 pb-1 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95" href="#">Profile</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-zinc-400 hover:text-white transition-all">notifications</button>
+<button class="material-symbols-outlined text-zinc-400 hover:text-white transition-all">settings</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pt-24 pb-32">
+<!-- Hero Section -->
+<section class="relative w-full h-[614px] overflow-hidden">
+<img alt="Profile Header" class="w-full h-full object-cover grayscale brightness-50" data-alt="Cinematic wide shot of architectural concrete structure with dramatic shadows and deep pink neon lighting accents at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBZdH-cItYSyXcCxaqsTmz8oU3txUxIrK_Op_i3NvBp2VqbFQgPbPZktgylro6oyVfn_TGepKvc3ajRgxK8k0VEfuSMITG9VhyKJu-9BIad_XGcj7p24XfJ1aGvgOVn3x5MQZD_H0QGfs5ilYPBwsI4h_2k5LBb_3uhWpAkUvXJQCW0xqoLwvThmO_Kl1Oh8xRkT_MDWriCuo44YfkybnnrJ4rXQv4McEwBnuUbS5Uq32nuz9-xqkGYE7AOzXxJmYO_uviv032NlCQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<!-- Asymmetrical Avatar Placement -->
+<div class="absolute bottom-0 left-[12.5%] translate-y-1/2 flex items-end gap-8">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-tr from-primary to-tertiary-container rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000"></div>
+<div class="relative w-48 h-48 rounded-full border-4 border-background overflow-hidden shadow-2xl">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="Editorial portrait of a young woman with sharp features and futuristic fashion in soft purple studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZXfW0spsvtAVz7XzZV5Pd6Mn6PqoHH2mdjTXxjKm3bRtzXdAZgLssG4Q6ayPlOGH95jbdbm4gW94NySyVuWyNFUrcKRAPgQSr70OA4Q19o8vIvq-zJMRJSeOjuAGzSMLvjaUcFFk7gRkj4aZd2ZspKu4x6R-GHHKQr2gx-hDBQ-Ov8TICF04sSG-Cctz5-lR3cG2rS1e2xb44wvShgguZ7oqVHER3t9STGfNdj-yfewbS0S-xPfzDQef7AbtjmE4wkPo7ELPIAqgm"/>
+</div>
+</div>
+<div class="pb-8">
+<h1 class="font-headline-lg text-headline-lg text-white mb-2 drop-shadow-lg">Sloane <span class="text-primary italic">Everly</span></h1>
+<div class="flex gap-4">
+<span class="font-label-caps text-label-caps px-4 py-2 border border-white/20 rounded-full glass-noise bg-white/5 backdrop-blur-md">Senior • Design</span>
+<span class="font-label-caps text-label-caps px-4 py-2 border border-white/20 rounded-full glass-noise bg-white/5 backdrop-blur-md">Austin, TX</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Profile Content Grid -->
+<section class="mt-32 px-offset-left pr-offset-right grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Bio & Info -->
+<div class="lg:col-span-7 space-y-12">
+<div class="space-y-6">
+<h2 class="font-label-caps text-label-caps text-primary tracking-[0.3em]">THE NARRATIVE</h2>
+<p class="font-display-xl text-headline-lg text-on-surface italic leading-[1.1]">
+                        Architecting digital futures while navigating the rhythm of collegiate life. <span class="text-zinc-600">Driven by aesthetic minimalism and late-night espresso.</span>
+</p>
+</div>
+<div class="grid grid-cols-2 gap-8 pt-8">
+<div class="space-y-2 group">
+<h3 class="font-label-caps text-label-caps text-zinc-500">INTERESTS</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 border border-outline-variant rounded-sm font-label-caps text-[10px] hover:border-primary hover:text-primary transition-colors cursor-default">UI/UX</span>
+<span class="px-3 py-1 border border-outline-variant rounded-sm font-label-caps text-[10px] hover:border-primary hover:text-primary transition-colors cursor-default">BAUHAUS</span>
+<span class="px-3 py-1 border border-outline-variant rounded-sm font-label-caps text-[10px] hover:border-primary hover:text-primary transition-colors cursor-default">TECHNO</span>
+</div>
+</div>
+<div class="space-y-2">
+<h3 class="font-label-caps text-label-caps text-zinc-500">CURRENTLY</h3>
+<p class="font-body-md text-body-md">Building at the Intersection Lab</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Stats & Actions -->
+<div class="lg:col-span-5 flex flex-col gap-8">
+<!-- Layered Depth Stats Card -->
+<div class="relative glass-noise bg-surface-container-high/40 p-10 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
+<div class="relative z-10 flex flex-col gap-10">
+<div class="flex justify-between items-center border-b border-white/5 pb-6">
+<div class="text-center flex-1">
+<span class="block font-headline-md text-white font-bold">1.2k</span>
+<span class="font-label-caps text-[10px] text-zinc-500">CONNECTIONS</span>
+</div>
+<div class="w-px h-12 bg-white/10"></div>
+<div class="text-center flex-1">
+<span class="block font-headline-md text-white font-bold">48</span>
+<span class="font-label-caps text-[10px] text-zinc-500">MOMENTS</span>
+</div>
+<div class="w-px h-12 bg-white/10"></div>
+<div class="text-center flex-1">
+<span class="block font-headline-md text-white font-bold">94%</span>
+<span class="font-label-caps text-[10px] text-zinc-500">MATCH RATE</span>
+</div>
+</div>
+<!-- Custom Pill Action -->
+<button class="w-full py-5 bg-primary text-on-primary-container font-label-caps text-sm rounded-full shadow-[0_0_20px_rgba(255,75,137,0.3)] hover:shadow-[0_0_40px_rgba(255,75,137,0.5)] transition-all duration-500 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                            CONNECT WITH SLOANE
+                        </button>
+<button class="w-full py-5 border border-white/20 hover:bg-white/5 font-label-caps text-sm rounded-full transition-all duration-300">
+                            MESSAGE
+                        </button>
+</div>
+</div>
+<!-- Recent Activity / Moments Bento Grid -->
+<div class="grid grid-cols-2 gap-4 h-64">
+<div class="rounded-3xl overflow-hidden relative group">
+<img alt="Moment 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Close-up of a neon-lit DJ deck in a dark club with blurred purple and blue bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPCG9CJgeAmvPAGwO4QfgjiX1GlbZtsTtXA4WjKa0bk5n6Knpv55ta8uwpinyXtSm54-WzVL3aQ2qx1BaVhn7DTPaXKX8UZysgfsc_NuZwmhNDBMk5QsSEUvFO2OxQOMw4ASe113ISCPUi-ZXXXD-c5x2k64zipO9U8LoiJZldZle-RssLrn5GjbRdLp4K_qXdxcrsU_AKyWpA5FgVdRVnhDIqJlkCDd7o9yxvD7S9UKi8F4kowcBOfr4kMAbMPVtHXlIdGjSkoKW"/>
+<div class="absolute inset-0 bg-zinc-950/20 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="rounded-3xl overflow-hidden relative group">
+<img alt="Moment 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Atmospheric shot of a modern library with massive floor-to-ceiling bookshelves and soft ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzAvTlFFt-MWdf-JaobHKo3q7rM0loyf529BRmhqAV9TKU18X9Jz0qVn_YYk0LsF_BZVoXbRJoTRs3dQ7kqUy9NCFyqKd4ZmxRHdeJ_v7oGIq00beYv9eHyFFwjj4kDZdYNDbTVn7PnQMM52XwrZME-4Fjqg7L6YDJ-Bs14y7G4JIq1gOLd0q1Qt1i_eInDf884abWWAFYYEelgKQxbNmfnDWgPQgx7j7wKGG1ql1I1mIf40Wp_MwpBVGkf81PvmKKq-fnb8g4G66d"/>
+<div class="absolute inset-0 bg-zinc-950/20 group-hover:bg-transparent transition-colors"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Aesthetic Floating Anchor -->
+<aside class="fixed right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-12 items-center">
+<div class="w-[1px] h-32 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+<div class="rotate-90 font-label-caps text-[10px] text-zinc-500 whitespace-nowrap tracking-[0.5em] origin-center">ESTABLISHED MMXXIV</div>
+<div class="w-[1px] h-32 bg-gradient-to-t from-transparent via-white/20 to-transparent"></div>
+</aside>
+</main>
+<!-- BottomNavBar -->
+<footer class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-safe md:hidden">
+<div class="bg-zinc-900/60 backdrop-blur-3xl border border-white/20 rounded-full mb-8 mx-auto w-[90%] max-w-md h-20 flex justify-around items-center px-4 shadow-[0_0_40px_rgba(255,0,122,0.15)] shadow-2xl glass-noise">
+<div class="flex flex-col items-center justify-center text-zinc-500 transition-all duration-500 ease-out hover:text-pink-200 cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="grain">grain</span>
+<span class="font-serif text-[10px] uppercase tracking-[0.2em] font-medium mt-1">Discover</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 transition-all duration-500 ease-out hover:text-pink-200 cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="favorite">favorite</span>
+<span class="font-serif text-[10px] uppercase tracking-[0.2em] font-medium mt-1">Match</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 transition-all duration-500 ease-out hover:text-pink-200 cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="bolt">bolt</span>
+<span class="font-serif text-[10px] uppercase tracking-[0.2em] font-medium mt-1">Pulse</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-pink-500/10 text-pink-400 rounded-full px-6 py-2 shadow-[inset_0_0_12px_rgba(255,0,122,0.3)] transition-all duration-500 ease-out scale-110 cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="person_2" style="font-variation-settings: 'FILL' 1;">person_2</span>
+<span class="font-serif text-[10px] uppercase tracking-[0.2em] font-medium mt-1">Profile</span>
+</div>
+</div>
+</footer>
+</body></html>
